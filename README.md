@@ -38,13 +38,27 @@ State is in-memory for the browser session only (not written as shopping data).
 - No `localStorage` / `chrome.storage`
 - No analytics or remote calls
 
+## Legal / Chrome Web Store (drafts)
+
+Not legal advice — fill placeholders and have counsel review before publishing.
+
+| Doc | Purpose |
+|-----|---------|
+| [docs/PRIVACY_POLICY.md](docs/PRIVACY_POLICY.md) | Privacy policy (host as public HTTPS URL) |
+| [docs/TERMS_OF_USE.md](docs/TERMS_OF_USE.md) | Terms, disclaimers, liability limits |
+| [docs/CHROME_WEB_STORE.md](docs/CHROME_WEB_STORE.md) | Listing copy, data-safety answers, upload checklist |
+
+Replace `[YOUR LEGAL NAME]`, `[YOUR EMAIL]`, `[EFFECTIVE DATE]`, and jurisdiction fields before use.
+
 ## Files
 
 ```
 manifest.json
-src/background.js   # toolbar toggle
+src/background.js
 src/content.js
 src/content.css
 icons/
+docs/
 README.md
 ```
+
