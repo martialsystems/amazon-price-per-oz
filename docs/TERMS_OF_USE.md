@@ -2,9 +2,11 @@
 
 **Amazon Unit Price Sort** (the “Extension”)
 
-**Effective date:** [EFFECTIVE DATE]  
-**Developer:** [YOUR LEGAL NAME OR BUSINESS NAME] (“Provider,” “we,” “us”)  
-**Contact:** [YOUR EMAIL ADDRESS]
+**Effective date:** August 4, 2026  
+**Last updated:** August 4, 2026  
+**Developer:** Martial Systems LLC (“Provider,” “we,” “us”)  
+**Contact:** martialsys@gmail.com  
+**Website:** https://martialsys.net/
 
 ---
 
@@ -12,15 +14,13 @@
 
 By installing, enabling, or using the Extension, you agree to these Terms of Use (the “Terms”). If you do not agree, do not install or use the Extension.
 
-**These Terms are a template and are not legal advice.** Have counsel review them before publication.
-
 ---
 
 ### 2. Description of the service
 
 The Extension is a browser tool that assists you in comparing **price per unit** on certain Amazon search result pages by reading information already displayed on those pages and, at your request, ranking or labeling listings and optionally reordering result cards in your browser view.
 
-The Extension is provided as a **convenience utility**. It is not affiliated with, endorsed by, or sponsored by Amazon.com, Inc. or its affiliates (“Amazon”), except to the extent Amazon’s public brand appears in user-facing text solely to describe compatibility.
+The Extension is provided as a **convenience utility**. It is **not affiliated with, endorsed by, or sponsored by Amazon.com, Inc. or its affiliates** (“Amazon”), except that Amazon’s name may appear in user-facing text solely to describe compatibility.
 
 ---
 
@@ -36,13 +36,11 @@ You may not:
 - Attempt to interfere with or disrupt Amazon websites, other users, or the Extension’s operation;
 - Misrepresent the Extension as an official Amazon product.
 
-If the source code is distributed under a separate open-source license, that license controls for code redistribution rights.
-
 ---
 
-### 4. Account; eligibility
+### 4. Eligibility
 
-You do not need an account with Provider to use the Extension. You must be able to form a binding contract in your jurisdiction. If you use the Extension on behalf of an organization, you represent that you have authority to bind that organization.
+You do not need an account with Provider to use the Extension. You must be able to form a binding contract under applicable law. If you use the Extension on behalf of an organization, you represent that you have authority to bind that organization.
 
 ---
 
@@ -87,7 +85,7 @@ Feedback you provide may be used by Provider without obligation to you.
 
 ### 9. Privacy
 
-Our handling of information is described in the **Privacy Policy** published with the Extension. By using the Extension, you also acknowledge that Policy.
+Our handling of information is described in the **Privacy Policy** published with the Extension (see `docs/PRIVACY_POLICY.md` or the URL linked from the Chrome Web Store listing). By using the Extension, you also acknowledge that Policy.
 
 ---
 
@@ -108,7 +106,7 @@ SOME JURISDICTIONS DO NOT ALLOW CERTAIN DISCLAIMERS; IN THOSE JURISDICTIONS, DIS
 
 ### 11. Limitation of liability
 
-TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL PROVIDER OR ITS OFFICERS, DIRECTORS, EMPLOYEES, OR AGENTS BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, EXEMPLARY, OR PUNITIVE DAMAGES, OR ANY LOSS OF PROFITS, DATA, GOODWILL, OR PURCHASE SAVINGS, ARISING OUT OF OR RELATED TO THE EXTENSION OR THESE TERMS, WHETHER BASED IN CONTRACT, TORT (INCLUDING NEGLIGENCE), STRICT LIABILITY, OR OTHERWISE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL PROVIDER OR ITS MEMBERS, MANAGERS, OFFICERS, EMPLOYEES, OR AGENTS BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, EXEMPLARY, OR PUNITIVE DAMAGES, OR ANY LOSS OF PROFITS, DATA, GOODWILL, OR PURCHASE SAVINGS, ARISING OUT OF OR RELATED TO THE EXTENSION OR THESE TERMS, WHETHER BASED IN CONTRACT, TORT (INCLUDING NEGLIGENCE), STRICT LIABILITY, OR OTHERWISE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
 
 TO THE MAXIMUM EXTENT PERMITTED BY LAW, PROVIDER’S TOTAL LIABILITY FOR ANY CLAIM ARISING OUT OF OR RELATING TO THE EXTENSION OR THESE TERMS SHALL NOT EXCEED THE GREATER OF (A) THE AMOUNT YOU PAID PROVIDER SPECIFICALLY FOR THE EXTENSION IN THE TWELVE (12) MONTHS BEFORE THE CLAIM (LIKELY **ZERO** IF THE EXTENSION IS FREE) OR (B) **USD $10**.
 
@@ -138,29 +136,29 @@ You may stop using the Extension at any time by disabling or uninstalling it. We
 
 ### 15. Governing law; disputes
 
-These Terms are governed by the laws of **[YOUR STATE/COUNTRY]**, excluding conflict-of-law rules.
+These Terms are governed by the laws of the **State of Indiana, United States of America**, excluding conflict-of-law rules.
 
-**Optional — choose one with counsel:**
+You agree to first contact **martialsys@gmail.com** and allow thirty (30) days to attempt informal resolution of any dispute.
 
-- **Informal resolution:** Contact [YOUR EMAIL] first and allow 30 days to resolve disputes informally.  
-- **Venue:** Exclusive courts located in **[CITY, STATE/COUNTRY]**, subject to mandatory consumer protections in your home jurisdiction.  
-- **Arbitration / class waiver:** Only include if appropriate for your situation and reviewed by counsel; many consumer contexts restrict these clauses.
+Subject to any non-waivable consumer protections in your place of residence, exclusive venue for disputes arising out of these Terms or the Extension shall be the state or federal courts located in the **State of Indiana**, and you consent to personal jurisdiction there.
 
 ---
 
 ### 16. Export and sanctions
 
-You represent that you are not prohibited from receiving software under applicable export control or sanctions laws.
+You represent that you are not prohibited from receiving software under applicable U.S. export control or sanctions laws.
 
 ---
 
 ### 17. Miscellaneous
 
-These Terms are the entire agreement between you and Provider regarding the Extension, superseding prior agreements on that subject. If any provision is unenforceable, the remainder stays in effect. Failure to enforce a provision is not a waiver. You may not assign these Terms without our consent; we may assign them in connection with a merger, acquisition, or sale of assets. Notices may be provided via the Chrome Web Store listing or the email you use to contact us.
+These Terms are the entire agreement between you and Provider regarding the Extension, superseding prior agreements on that subject. If any provision is unenforceable, the remainder stays in effect. Failure to enforce a provision is not a waiver. You may not assign these Terms without our consent; we may assign them in connection with a merger, acquisition, or sale of assets. Notices may be provided via the Chrome Web Store listing, https://martialsys.net/, or the email you use to contact us.
 
 ---
 
 ### 18. Contact
 
-**[YOUR LEGAL NAME OR BUSINESS NAME]**  
-**[YOUR EMAIL ADDRESS]**
+**Martial Systems LLC**  
+Email: **martialsys@gmail.com**  
+Web: **https://martialsys.net/**  
+Governing jurisdiction: **Indiana, United States**

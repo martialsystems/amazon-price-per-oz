@@ -1,35 +1,41 @@
 # Chrome Web Store — listing & compliance kit
 
-Fill bracketed fields before upload. Host **Privacy Policy** and **Terms** at public HTTPS URLs (GitHub Pages, your site, etc.) and paste those URLs into the Store Console.
+**Publisher:** Martial Systems LLC  
+**Support email:** martialsys@gmail.com  
+**Site:** https://martialsys.net/  
+**Docs effective:** August 4, 2026  
 
-**Not legal advice.** Confirm current Chrome Web Store Program Policies before submission.
+Host **Privacy Policy** and **Terms** at public HTTPS URLs and paste them into the Store Console.
+
+Suggested public URLs (after you publish the Markdown or HTML):
+
+- Privacy: `https://martialsys.net/privacy` *(or GitHub Pages / raw rendered page)*  
+- Terms: `https://martialsys.net/terms`
 
 ---
 
 ## 1. Developer account checklist
 
-- [ ] Pay one-time Chrome Web Store developer registration fee  
-- [ ] Verify developer email / 2FA  
-- [ ] Decide publisher name (personal or company)  
-- [ ] Host Privacy Policy URL (required for many listings; strongly recommended even with no collection)  
-- [ ] Optional: Terms of Use URL  
-- [ ] Prepare 128×128 icon (you have `icons/icon128.png`)  
-- [ ] Prepare screenshots (1280×800 or 640×400): search page + overlay + badges  
-- [ ] Optional: small promo tile 440×280  
+- [ ] Chrome Web Store developer registration (one-time fee)
+- [ ] Publisher display name: **Martial Systems LLC**
+- [ ] Support email: **martialsys@gmail.com** (must receive mail)
+- [ ] Host Privacy Policy URL
+- [ ] Optional: Terms of Use URL
+- [ ] Icon 128×128 (`icons/icon128.png`)
+- [ ] Screenshots: search + overlay + badges
+- [ ] Optional promo tile 440×280
 
 ---
 
-## 2. Suggested Store listing copy
+## 2. Store listing copy (ready to paste)
 
-### Name (max 75 characters)
+### Name
 
 ```
 Unit Price Sort for Amazon Search
 ```
 
-*(Avoid leading with “Amazon” alone if trademark review is a concern; descriptive “for Amazon Search” is common for compatibility.)*
-
-### Short description (max 132 characters)
+### Short description
 
 ```
 Sort Amazon search results by price per unit. Click Sort Now. No shopping data collected or sold.
@@ -58,54 +64,51 @@ PRIVACY
 • Does not use advertising analytics SDKs
 • Does not send your shopping activity to a developer backend
 • Does not request broad “all websites” access—only listed Amazon domains
-• Enable/disable state is kept only as temporary session UI state in the browser
+• Enable/disable state is temporary session UI state in the browser only
 
 IMPORTANT DISCLAIMERS
-• Not affiliated with Amazon.
+• Not affiliated with Amazon.com, Inc. or its affiliates.
 • Unit prices can be wrong or incomplete—always verify on the product page before you buy.
 • Amazon page changes may temporarily break sorting until the extension is updated.
 
-Support: [YOUR EMAIL]
-Privacy Policy: [HTTPS URL TO PRIVACY_POLICY]
+Developer: Martial Systems LLC
+Support: martialsys@gmail.com
+Web: https://martialsys.net/
+Privacy Policy: [PASTE YOUR HOSTED PRIVACY URL]
+Terms of Use: [PASTE YOUR HOSTED TERMS URL]
 ```
 
 ### Category
 
-**Shopping** (or Productivity)
+**Shopping**
 
 ### Language
 
-English (United States) — add locales later if needed.
+English (United States)
 
 ---
 
-## 3. Privacy practices (Store “Data safety” / declarations)
+## 3. Privacy practices / data safety (match the code)
 
-Answer consistently with the real code:
+| Topic | Answer |
+|-------|--------|
+| Collect user data to developer servers? | **No** |
+| Used for ads? | **No** |
+| Sold? | **No** |
+| Shared with third parties for ads? | **No** |
+| Remote code? | **No** |
 
-| Store question (paraphrased) | Suggested answer |
-|------------------------------|------------------|
-| Does the extension collect user data? | **No** (no remote collection). If the form forces categories, state only that data is processed **ephemerally on-device** and not transmitted. |
-| Data used for ads? | **No** |
-| Data sold? | **No** |
-| Data shared with third parties? | **No** (except as inherent to visiting Amazon/Google) |
-| Encryption in transit? | N/A if no developer transmission; do not claim collection + encryption |
-| Can users request deletion? | N/A for shopping datasets; support email for correspondence |
+**Host permissions justification:**
 
-**Permissions justification (Console text boxes):**
+> Required to read product titles, prices, and unit-price text already shown on Amazon search pages and to display ranking badges and optionally reorder result cards in the user’s tab. No shopping data is sent to Martial Systems LLC.
 
-**Host permissions (Amazon domains only):**  
-“Required to read product titles, prices, and unit-price text already shown on Amazon search pages and to display ranking badges / optionally reorder result cards in the user’s tab. No data is sent to the developer.”
+**Toolbar / service worker:**
 
-**No `storage` permission:**  
-Do not claim chrome.storage if unused.
-
-**Service worker / action:**  
-“Used so the toolbar icon can enable or disable the on-page overlay without collecting browsing history.”
+> Used so the toolbar icon can enable or disable the on-page overlay. No browsing history is uploaded.
 
 ---
 
-## 4. Single purpose statement
+## 4. Single purpose
 
 ```
 The extension’s single purpose is to help users compare unit prices on Amazon search result pages by ranking and labeling listings by price per unit.
@@ -113,76 +116,47 @@ The extension’s single purpose is to help users compare unit prices on Amazon 
 
 ---
 
-## 5. Remote code / networking attestation
-
-- Extension does **not** load remote code.  
-- Extension does **not** call developer APIs.  
-- Content scripts are packaged with the extension.
-
-If the Store asks about remote code: **No.**
-
----
-
-## 6. Trademark / branding notes (practical)
-
-- Prefer Store name like **“Unit Price Sort for Amazon Search”** rather than implying official Amazon status.  
-- In screenshots, avoid Amazon logos as your brand mark; showing the Amazon page UI in context of the feature is usually OK as a functional screenshot—follow current Google policies.  
-- Description must say **not affiliated with Amazon**.
-
-Amazon’s brand guidelines are separate; when in doubt, use generic wording (“supported shopping sites including Amazon search pages”).
-
----
-
-## 7. Support & distribution
+## 5. Contact block (Store + support)
 
 | Field | Value |
 |-------|--------|
-| Support email | [YOUR EMAIL] — must work |
-| Homepage | optional GitHub repo or site |
-| Marketing URL | optional |
+| Developer | Martial Systems LLC |
+| Email | martialsys@gmail.com |
+| Homepage | https://martialsys.net/ |
+| Jurisdiction | Indiana, United States |
 
 ---
 
-## 8. Pre-submit test plan (do this)
+## 6. Pre-submit test plan
 
-- [ ] Fresh Chrome profile, install from package  
-- [ ] Grocery search with unit prices → Sort Now → badges sensible  
-- [ ] Search with few unit prices → status message, no crash  
-- [ ] Toolbar toggle OFF → overlay gone; ON → returns  
-- [ ] Overlay Disable matches toolbar OFF  
-- [ ] Drag overlay title  
-- [ ] Non-Amazon site → no overlay  
-- [ ] Product detail page → no harmful breakage  
-- [ ] Console free of uncaught extension errors on a normal search  
+- [ ] Fresh profile install
+- [ ] Grocery search → Sort Now → sensible badges
+- [ ] Sparse unit prices → status text, no crash
+- [ ] Toolbar OFF / ON
+- [ ] Overlay Disable = toolbar OFF
+- [ ] Drag overlay title
+- [ ] Non-Amazon site → no overlay
+- [ ] No uncaught extension errors on a normal search
 
 ---
 
-## 9. Package for upload
+## 7. Package
 
 ```bash
-# From the extension root — exclude .git if you zip by hand
-zip -r unit-price-sort.zip manifest.json src icons README.md -x "*.DS_Store"
+cd /path/to/amazon-price-per-oz
+zip -r unit-price-sort.zip manifest.json src icons README.md -x "*.DS_Store" -x "**/.git/**"
 ```
 
-Or use Chrome “Pack extension” only if you manage keys carefully (Store upload usually wants a zip of the unpacked directory).
-
-Upload the zip in Chrome Web Store Developer Dashboard → New item / new package.
-
 ---
 
-## 10. After publishing
+## 8. Verification notes (filled for this release)
 
-- Monitor support email  
-- When Amazon breaks selectors, ship a version bump quickly  
-- Keep Privacy Policy URL live forever (or update Store if moved)  
-- Increment `manifest.json` version on every upload  
-
----
-
-## 11. Documents to publish on the web
-
-| File in repo | Publish as |
-|--------------|------------|
-| `docs/PRIVACY_POLICY.md` | `https://[yoursite]/privacy` (HTML or rendered Markdown) |
-| `docs/TERMS_OF_USE.md` | `https://[yoursite]/terms` |
-| This file | Keep private or in repo; not required on the web |
+| Item | Status |
+|------|--------|
+| Legal name | **Martial Systems LLC** (as provided by developer) |
+| Public email | **martialsys@gmail.com** — matches contact on https://martialsys.net/ |
+| Site | **https://martialsys.net/** — company / research site lists Martial Systems LLC and same email |
+| Effective date | **August 4, 2026** |
+| Governing law | **Indiana, USA** |
+| Indiana SOS business search | Not independently confirmed in this workspace (INBiz requires interactive search). Confirm “Active” status on [INBiz Business Search](https://bsd.sos.in.gov/publicbusinesssearch) before Store payout / tax forms if required. |
+| Street address | Not published on martialsys.net; email-only contact is acceptable for privacy policy. Use your registered agent address on IRS/Chrome developer tax forms if Google asks—not required on the public policy page. |
