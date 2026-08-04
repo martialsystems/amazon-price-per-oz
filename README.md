@@ -38,16 +38,12 @@ State is in-memory for the browser session only (not written as shopping data).
 - No `localStorage` / `chrome.storage`
 - No analytics or remote calls
 
-## Legal / Chrome Web Store
+## Privacy / Store
 
-**Publisher:** Martial Systems LLC · **Support:** martialsys@gmail.com · **Site:** https://martialsys.net/  
-**Docs effective:** August 4, 2026 · **Governing law:** Indiana, USA
+**Martial Systems LLC** · martialsys@gmail.com · https://martialsys.net/
 
-| Doc | Purpose |
-|-----|---------|
-| [docs/PRIVACY_POLICY.md](docs/PRIVACY_POLICY.md) | Privacy policy — host as public HTTPS URL for the Store |
-| [docs/TERMS_OF_USE.md](docs/TERMS_OF_USE.md) | Terms, disclaimers, liability limits |
-| [docs/CHROME_WEB_STORE.md](docs/CHROME_WEB_STORE.md) | Listing copy, data-safety answers, upload checklist |
+- [docs/PRIVACY_POLICY.md](docs/PRIVACY_POLICY.md) — short policy (host as HTTPS URL for Chrome Web Store)
+- [docs/CHROME_WEB_STORE.md](docs/CHROME_WEB_STORE.md) — minimal listing paste text
 
 ## Files
 
