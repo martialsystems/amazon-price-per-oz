@@ -1,8 +1,18 @@
-# Amazon Unit Price Sort
+# Unit Price Sort for Amazon Search
 
-Chrome extension that ranks Amazon **search results** by **price per unit**.
+**Martial Systems LLC** product — Chrome extension that ranks Amazon **search results** by **price per unit**.
 
-## How to use
+| | |
+|--|--|
+| **Publisher** | Martial Systems LLC |
+| **Support** | martialsys@gmail.com |
+| **Web** | https://martialsys.net/ |
+| **Version** | 2.3.0 |
+| **License** | Proprietary — see [LICENSE](LICENSE) and [Terms](docs/TERMS_OF_USE.md) |
+
+Not affiliated with Amazon.com, Inc.
+
+## How to use (local / unpacked)
 
 1. Load unpacked from this folder (`chrome://extensions` → Developer mode)
 2. **Pin** the extension on the Chrome toolbar
@@ -17,45 +27,58 @@ Chrome extension that ranks Amazon **search results** by **price per unit**.
 | Overlay **Disable** | Hides panel + badges; toolbar shows **OFF** |
 | **Click pinned icon** | Toggles ON/OFF on all open Amazon tabs |
 | Icon badge **OFF** | Extension is disabled until you click again |
-| **Right-click** icon → **Keep Alexa off** | Checkbox: hide Alexa-for-Shopping popup/sidebar (stays until you uncheck) |
+| **Right-click** icon → **Keep Alexa off** | Checkbox: hide Alexa-for-Shopping UI (persists until unchecked) |
 | **Right-click** icon → **Donate (Ko-fi)** | Opens https://ko-fi.com/martialgames |
 
 Unit-sort ON/OFF is in-memory for the browser session only. **Keep Alexa off** is a single boolean preference (not shopping data).
 
-## Design (v2 — efficient)
+## Chrome Web Store upload
+
+Full paste kit + checklist: **[docs/CHROME_WEB_STORE.md](docs/CHROME_WEB_STORE.md)**
+
+```bash
+./scripts/package_chrome_store.sh
+# → dist/unit-price-sort-chrome.zip  (and versioned copy)
+```
+
+Upload that zip in the [Chrome Web Store Developer Dashboard](https://chrome.google.com/webstore/devconsole).
+
+**Host first (required for privacy URL):**
+
+- `store/privacy.html` — Privacy Policy (HTTPS)
+- `store/terms.html` — Terms of Use (HTTPS)
+
+Markdown originals: [docs/PRIVACY_POLICY.md](docs/PRIVACY_POLICY.md), [docs/TERMS_OF_USE.md](docs/TERMS_OF_USE.md).
+
+## Privacy (summary)
+
+- No shopping data sent to Martial Systems LLC
+- No ads / analytics SDKs
+- Host access only to listed Amazon domains
+- Optional local preference: Keep Alexa off (boolean only)
+
+## Design
 
 | Choice | Why |
 |--------|-----|
-| Manual **Sort Now** | No MutationObserver sort loops; wait until results are ready |
+| Manual **Sort Now** | No auto DOM thrash; wait until results are ready |
 | Strict search tiles only | `[data-component-type="s-search-result"][data-asin]` |
 | Nested cards dropped | Avoids HierarchyRequestError |
-| Sibling `appendChild` only | Cheap reorder; try/catch; badges still apply if move fails |
-| Amazon unit price first | `($0.82 / fluid ounce)`, `($133.29 / 100 Sheets)` |
+| Sibling `appendChild` only | Cheap reorder; badges still apply if move fails |
+| Amazon unit price first | `($0.82 / fluid ounce)`, etc. |
 | Title size fallback | When Amazon omits unit price |
-| No storage / no network | Privacy |
-
-## Privacy
-
-- No `storage` permission
-- No `localStorage` / `chrome.storage`
-- No analytics or remote calls
-
-## Privacy / Store
-
-**Martial Systems LLC** · martialsys@gmail.com · https://martialsys.net/
-
-- [docs/PRIVACY_POLICY.md](docs/PRIVACY_POLICY.md) — short policy (host as HTTPS URL for Chrome Web Store)
-- [docs/CHROME_WEB_STORE.md](docs/CHROME_WEB_STORE.md) — minimal listing paste text
 
 ## Files
 
 ```
-manifest.json
-src/background.js
-src/content.js
-src/content.css
-icons/
-docs/
+manifest.json          # MV3 product manifest
+src/                   # background + content script/CSS
+icons/                 # 16 / 48 / 128
+store/                 # Hostable privacy.html + terms.html
+docs/                  # Legal + Store kit (Markdown)
+scripts/package_chrome_store.sh
+LICENSE
 README.md
 ```
 
+© 2026 Martial Systems LLC. All rights reserved.

@@ -1,4 +1,7 @@
 /**
+ * Unit Price Sort for Amazon Search — Martial Systems LLC
+ * Copyright (c) 2026 Martial Systems LLC. All rights reserved.
+ *
  * Toolbar click toggles overlay on Amazon tabs.
  * Right-click action menu: Keep Alexa off (persisted) + Donate (Ko-fi).
  * Unit-sort ON/OFF is session memory only (SW may reset to ON).

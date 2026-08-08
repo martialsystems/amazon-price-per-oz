@@ -1,8 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "Amazon Unit Price Sort",
-  "version": "2.2.0",
-  "description": "Sort Amazon search by unit price. Toolbar click toggles overlay. Optional Keep Alexa off. Nothing shopping-related is saved.",
+  "name": "Unit Price Sort for Amazon Search",
+  "version": "2.3.0",
+  "description": "Sort Amazon search by unit price. Optional Keep Alexa off. By Martial Systems LLC. No shopping data sold.",
+  "homepage_url": "https://martialsys.net/",
   "permissions": ["contextMenus", "storage"],
   "host_permissions": [
     "*://*.amazon.com/*",

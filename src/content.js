@@ -1,10 +1,10 @@
 /**
- * Amazon Price Per Unit Sort — lean hybrid
- * - Manual "Sort Now" (no auto DOM thrash)
- * - Amazon unit-price strings + title-size fallback
- * - Badges + safe sibling reorder only
- * - Session unit-sort toggle; optional Keep Alexa off (stored boolean only)
- * - No shopping data / no network
+ * Unit Price Sort for Amazon Search — Martial Systems LLC
+ * Copyright (c) 2026 Martial Systems LLC. All rights reserved.
+ *
+ * Lean hybrid: manual Sort Now, Amazon unit-price + title fallback,
+ * badges + safe sibling reorder, session unit-sort toggle,
+ * optional Keep Alexa off (stored boolean only). No shopping data / no network.
  */
 (function () {
   "use strict";

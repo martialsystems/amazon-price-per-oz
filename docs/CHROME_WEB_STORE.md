@@ -1,38 +1,220 @@
-# Chrome Web Store (minimal)
+# Chrome Web Store — Martial Systems LLC product kit
 
+**Product:** Unit Price Sort for Amazon Search  
 **Publisher:** Martial Systems LLC  
-**Support:** martialsys@gmail.com  
-**Privacy:** host `docs/PRIVACY_POLICY.md` at a public HTTPS URL and paste that link in the Store.
+**Version:** 2.3.0  
+**Support email:** martialsys@gmail.com  
+**Homepage:** https://martialsys.net/  
+**Source package:** run `scripts/package_chrome_store.sh` → `dist/unit-price-sort-chrome.zip`
 
-### Name
+---
+
+## Before you click Publish
+
+1. **Chrome Web Store developer account** registered (one-time fee).
+2. Publisher / trader name: **Martial Systems LLC**.
+3. Support email that receives mail: **martialsys@gmail.com**.
+4. **Host Privacy + Terms over HTTPS** (Store requires a privacy policy URL).
+
+### Host legal pages (pick one)
+
+| Option | How |
+|--------|-----|
+| **A. Your site (preferred)** | Upload `store/privacy.html` and `store/terms.html` to martialsys.net (e.g. `/extensions/unit-price-sort/privacy.html`) |
+| **B. GitHub Pages** | Enable Pages on this repo (root or `/docs` / `/store`), then use the `*.github.io` URLs |
+
+Paste those HTTPS URLs into the Store Console. Raw GitHub `blob` URLs are a poor choice (login walls / unstyled markdown).
+
+Suggested placeholders until hosted:
+
+- Privacy: `https://martialsys.net/…/privacy.html`  
+- Terms: `https://martialsys.net/…/terms.html`
+
+Also in-repo Markdown: `docs/PRIVACY_POLICY.md`, `docs/TERMS_OF_USE.md`.
+
+---
+
+## 1. Upload package
+
+```bash
+cd /path/to/amazon-price-per-oz
+./scripts/package_chrome_store.sh
+# → dist/unit-price-sort-chrome.zip
+```
+
+In [Chrome Web Store Developer Dashboard](https://chrome.google.com/webstore/devconsole):
+
+1. **New item** → upload the zip  
+2. Fill listing fields below  
+3. Privacy practices (section 3)  
+4. Submit for review  
+
+**Zip contents (runtime only):** `manifest.json`, `src/`, `icons/` — no `.git`, docs, or node_modules.
+
+---
+
+## 2. Store listing copy (paste)
+
+### Name (max 75)
+
 ```
 Unit Price Sort for Amazon Search
 ```
 
-### Short description
+### Short description (max 132)
+
 ```
-Sort Amazon search by price per unit. Click Sort Now. No shopping data collected.
+Sort Amazon search by price per unit. Click Sort Now. Optional Keep Alexa off. No shopping data sold.
 ```
 
-### Description (short)
+### Detailed description
+
 ```
-Ranks Amazon search results by unit price ($/oz, $/count, etc.).
+Unit Price Sort helps you compare Amazon search listings by price per unit (for example, per ounce or per count).
 
-1. Pin the extension
-2. Open an Amazon search
-3. Click Sort Now on the panel
-4. Toolbar icon toggles the panel on/off
+A product of Martial Systems LLC.
 
-Not affiliated with Amazon. Always verify prices on the product page.
-Privacy: we don’t collect or sell shopping data — see Privacy Policy.
+HOW TO USE
+1. Install and pin the extension.
+2. Open an Amazon search results page (groceries and bulk items work best).
+3. Click “Sort Now” on the on-page panel.
+4. See ranked badges such as “#1 · $0.12/oz”.
+5. Click the toolbar icon anytime to show or hide the overlay (badge shows OFF when disabled).
+6. Right-click the icon → “Keep Alexa off” to hide Amazon’s on-page shopping assistant (optional, saved preference).
+7. Right-click the icon → “Donate (Ko-fi)” if you want to support development.
+
+WHAT IT DOES
+• Reads unit prices Amazon already shows (e.g. “$0.82 / fluid ounce”), when available
+• Otherwise estimates unit price from package size in the title when possible
+• Ranks results and labels them so cheaper unit prices are easier to spot
+• Optionally reorders sibling result cards in your browser view
+• Optionally keeps Alexa-for-Shopping UI off on Amazon pages
+
+PRIVACY
+• Does not sell your data
+• Does not use advertising analytics SDKs
+• Does not send your shopping activity to a developer backend
+• Does not request broad “all websites” access—only listed Amazon domains
+• Only optional preference stored: Keep Alexa off (one boolean). No product or search history.
+
+IMPORTANT DISCLAIMERS
+• Not affiliated with Amazon.com, Inc. or its affiliates.
+• Unit prices can be wrong or incomplete—always verify on the product page before you buy.
+• Amazon page changes may temporarily break sorting or assistant-hiding until the extension is updated.
+
+Developer: Martial Systems LLC
 Support: martialsys@gmail.com
+Web: https://martialsys.net/
+Privacy Policy: [PASTE YOUR HOSTED PRIVACY URL]
+Terms of Use: [PASTE YOUR HOSTED TERMS URL]
 ```
 
-### Data safety
-- No data collected to our servers  
-- No ads / no sale of data  
+### Category
 
-### Host permissions justification
+**Shopping**
+
+### Language
+
+English (United States)
+
+### Official URL (homepage)
+
 ```
-Reads prices and unit text already on Amazon search pages to rank results in your tab. Nothing is sent to us.
+https://martialsys.net/
 ```
+
+---
+
+## 3. Privacy practices / data safety (match the code)
+
+| Console question | Answer |
+|------------------|--------|
+| Collects user data? | **No** personal shopping data to developer servers. Local preference only (see below). |
+| Personally identifiable information | **No** |
+| Health / financial / auth | **No** |
+| Web history | **No** (Amazon pages only; not sent to us) |
+| User activity | **No** (not uploaded) |
+| Website content | Processed **locally** only to rank unit prices; **not** transmitted to developer |
+| Used for ads / sale of data | **No** |
+| Remote code | **No** |
+
+**If asked about local storage / preferences:**  
+One boolean: **Keep Alexa off**. No product IDs, prices, or queries stored.
+
+### Host permission justification
+
+```
+Required to read product titles, prices, and unit-price text already shown on Amazon search pages; to display ranking badges and optionally reorder result cards in the user’s tab; and, if the user enables Keep Alexa off, to hide on-page shopping assistant UI. No shopping data is sent to Martial Systems LLC.
+```
+
+### `storage` permission justification
+
+```
+Saves a single boolean preference (Keep Alexa off) so the user’s choice persists across browser restarts. Does not store shopping history, prices, or product identifiers.
+```
+
+### `contextMenus` permission justification
+
+```
+Provides the extension icon menu items: Keep Alexa off (toggle) and Donate (opens support link).
+```
+
+### Single purpose
+
+```
+The extension’s single purpose is to help users compare unit prices on Amazon search result pages by ranking and labeling listings by price per unit. Optional Keep Alexa off is a related on-page shopping convenience limited to the same Amazon domains.
+```
+
+---
+
+## 4. Assets checklist
+
+| Asset | Status / notes |
+|-------|----------------|
+| Icon 16 / 48 / 128 | `icons/` present |
+| Screenshots (1280×800 or 640×400) | **You capture** on a grocery search with Sort Now badges + overlay |
+| Optional promo 440×280 | Optional |
+| Small promo tile 440×280 | Optional |
+| Marquee 1400×560 | Optional |
+
+Capture tips: pin extension, search something like “olive oil 1 liter”, Sort Now, crop clean UI, no personal account email in shot.
+
+---
+
+## 5. Contact block
+
+| Field | Value |
+|-------|--------|
+| Developer | Martial Systems LLC |
+| Email | martialsys@gmail.com |
+| Homepage | https://martialsys.net/ |
+| Jurisdiction | Indiana, United States |
+
+Confirm **Active** status on [INBiz Business Search](https://bsd.sos.in.gov/publicbusinesssearch) before payout/tax forms if Google asks for business verification. Use registered agent address on tax forms if required—not required on the public privacy page.
+
+---
+
+## 6. Pre-submit test plan
+
+- [ ] Fresh profile install from zip  
+- [ ] Grocery search → Sort Now → sensible badges  
+- [ ] Sparse unit prices → status text, no crash  
+- [ ] Toolbar OFF / ON  
+- [ ] Overlay Disable = toolbar OFF  
+- [ ] Drag overlay title  
+- [ ] Keep Alexa off checked → assistant stays hidden; uncheck restores  
+- [ ] Donate opens Ko-fi  
+- [ ] Non-Amazon site → no overlay  
+- [ ] No uncaught extension errors on a normal search  
+
+---
+
+## 7. Versioning
+
+Bump `manifest.json` `version` before each Store upload (Chrome rejects reusing the same version on an existing item).
+
+---
+
+## 8. Trademark note
+
+Amazon is a trademark of Amazon.com, Inc. or its affiliates. Listing copy states non-affiliation. Do not use Amazon logos in Store creatives unless you have rights.
