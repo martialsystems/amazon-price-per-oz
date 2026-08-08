@@ -16,19 +16,14 @@
 3. Support email that receives mail: **martialsys@gmail.com**.
 4. **Host Privacy + Terms over HTTPS** (Store requires a privacy policy URL).
 
-### Host legal pages (pick one)
+### Host legal pages (HTTPS)
 
-| Option | How |
-|--------|-----|
-| **A. Your site (preferred)** | Upload `store/privacy.html` and `store/terms.html` to martialsys.net (e.g. `/extensions/unit-price-sort/privacy.html`) |
-| **B. GitHub Pages** | Enable Pages on this repo (root or `/docs` / `/store`), then use the `*.github.io` URLs |
+| Option | URLs |
+|--------|------|
+| **GitHub Pages (ready)** | Privacy: `https://martialsystems.github.io/amazon-price-per-oz/privacy.html` · Terms: `https://martialsystems.github.io/amazon-price-per-oz/terms.html` |
+| **Your site (preferred long-term)** | Upload `store/privacy.html` + `store/terms.html` (or `docs/*.html`) to martialsys.net |
 
-Paste those HTTPS URLs into the Store Console. Raw GitHub `blob` URLs are a poor choice (login walls / unstyled markdown).
-
-Suggested placeholders until hosted:
-
-- Privacy: `https://martialsys.net/…/privacy.html`  
-- Terms: `https://martialsys.net/…/terms.html`
+Paste the HTTPS privacy URL into the Store Console (required). Terms optional but recommended.
 
 Also in-repo Markdown: `docs/PRIVACY_POLICY.md`, `docs/TERMS_OF_USE.md`.
 
@@ -105,8 +100,8 @@ IMPORTANT DISCLAIMERS
 Developer: Martial Systems LLC
 Support: martialsys@gmail.com
 Web: https://martialsys.net/
-Privacy Policy: [PASTE YOUR HOSTED PRIVACY URL]
-Terms of Use: [PASTE YOUR HOSTED TERMS URL]
+Privacy Policy: https://martialsystems.github.io/amazon-price-per-oz/privacy.html
+Terms of Use: https://martialsystems.github.io/amazon-price-per-oz/terms.html
 ```
 
 ### Category

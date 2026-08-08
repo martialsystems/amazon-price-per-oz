@@ -43,10 +43,10 @@ Full paste kit + checklist: **[docs/CHROME_WEB_STORE.md](docs/CHROME_WEB_STORE.m
 
 Upload that zip in the [Chrome Web Store Developer Dashboard](https://chrome.google.com/webstore/devconsole).
 
-**Host first (required for privacy URL):**
+**Hosted legal (for Store Console):**
 
-- `store/privacy.html` — Privacy Policy (HTTPS)
-- `store/terms.html` — Terms of Use (HTTPS)
+- Privacy: https://martialsystems.github.io/amazon-price-per-oz/privacy.html  
+- Terms: https://martialsystems.github.io/amazon-price-per-oz/terms.html  
 
 Markdown originals: [docs/PRIVACY_POLICY.md](docs/PRIVACY_POLICY.md), [docs/TERMS_OF_USE.md](docs/TERMS_OF_USE.md).
 
