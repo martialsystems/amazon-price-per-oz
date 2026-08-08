@@ -3,14 +3,42 @@
  * - Manual "Sort Now" (no auto DOM thrash)
  * - Amazon unit-price strings + title-size fallback
  * - Badges + safe sibling reorder only
- * - Session toggle only; nothing saved / no network
+ * - Session unit-sort toggle; optional Keep Alexa off (stored boolean only)
+ * - No shopping data / no network
  */
 (function () {
   "use strict";
 
   let enabled = true;
+  let alexaOff = false;
   let overlay = null;
   let lastHref = location.href;
+  let alexaMo = null;
+  let alexaReapTimer = null;
+
+  // Known Alexa-for-Shopping / Rufus / copilot shells (Amazon renames often)
+  const ALEXA_SELECTORS = [
+    ".rufus-container",
+    ".rufus-panel-container",
+    ".rufus-chat-container",
+    ".rufus-conversation-container",
+    ".rufus-conversation-container-inner",
+    ".rufus-container-peek-view",
+    ".rufus-panel-header-container",
+    ".rufus-view-filler",
+    ".nav-rufus-disco",
+    ".nav-rufus-content",
+    "#nav-flyout-rufus",
+    ".copilot-modal-container",
+    ".copilot-chat-root",
+    "aside[data-copilot-chat-root]",
+    "div[data-copilot-name]",
+    '[class*="rufus-panel"]',
+    '[class*="rufus-chat"]',
+    '[class*="alexa-shopping"]',
+    '[id*="rufus"]',
+    '[id*="AlexaShopping"]',
+  ].join(",");
 
   function setEnabledLocal(next) {
     enabled = !!next;
@@ -20,6 +48,92 @@
     } else {
       ensureOverlay();
     }
+  }
+
+  function applyAlexaOff(next) {
+    alexaOff = !!next;
+    try {
+      document.documentElement.classList.toggle("ppu-alexa-off", alexaOff);
+    } catch (_) {}
+    if (alexaOff) {
+      startAlexaWatch();
+      reapAlexa();
+    } else {
+      stopAlexaWatch();
+    }
+  }
+
+  function hideAlexaNode(el) {
+    if (!el || el.nodeType !== 1) return;
+    // Never hide chrome that is not the shopping assistant
+    if (el.id === "nav-main" || el.id === "navbar" || el.id === "a-page") return;
+    if (el.closest && el.closest("#ppu-overlay, #nav-main, #hmenu-canvas, #s-refinements"))
+      return;
+    try {
+      el.style.setProperty("display", "none", "important");
+      el.style.setProperty("visibility", "hidden", "important");
+      el.style.setProperty("pointer-events", "none", "important");
+      el.setAttribute("data-ppu-alexa-hidden", "1");
+    } catch (_) {}
+  }
+
+  function reapAlexa() {
+    if (!alexaOff) return;
+    try {
+      document.querySelectorAll(ALEXA_SELECTORS).forEach(hideAlexaNode);
+    } catch (_) {}
+    // Strip body dock classes that reserve the side gutter
+    try {
+      const b = document.body;
+      if (!b) return;
+      for (const c of Array.from(b.classList)) {
+        const t = c.toLowerCase();
+        if (t.includes("rufus") || t.includes("copilot") || t.includes("alexa-shopping")) {
+          b.classList.remove(c);
+        }
+      }
+    } catch (_) {}
+  }
+
+  function startAlexaWatch() {
+    if (alexaMo) return;
+    try {
+      alexaMo = new MutationObserver(() => {
+        if (alexaReapTimer) return;
+        alexaReapTimer = setTimeout(() => {
+          alexaReapTimer = null;
+          reapAlexa();
+        }, 200);
+      });
+      alexaMo.observe(document.documentElement, {
+        childList: true,
+        subtree: true,
+      });
+    } catch (_) {
+      alexaMo = null;
+    }
+  }
+
+  function stopAlexaWatch() {
+    if (alexaMo) {
+      try {
+        alexaMo.disconnect();
+      } catch (_) {}
+      alexaMo = null;
+    }
+    if (alexaReapTimer) {
+      clearTimeout(alexaReapTimer);
+      alexaReapTimer = null;
+    }
+    // Undo inline hides so Amazon can show the assistant again without a full reload
+    try {
+      document.querySelectorAll("[data-ppu-alexa-hidden='1']").forEach((el) => {
+        el.style.removeProperty("display");
+        el.style.removeProperty("visibility");
+        el.style.removeProperty("pointer-events");
+        el.removeAttribute("data-ppu-alexa-hidden");
+      });
+    } catch (_) {}
   }
 
   function syncEnabledToBackground(next) {
@@ -41,6 +155,7 @@
           return;
         }
         setEnabledLocal(!!res.enabled);
+        if ("alexaOff" in res) applyAlexaOff(!!res.alexaOff);
         cb?.(enabled);
       });
     } catch (_) {
@@ -501,11 +616,15 @@
     });
   }
 
-  // Toolbar pin-click (and other tabs) → enable/disable
+  // Toolbar pin-click / context menu → enable/disable + Alexa preference
   try {
     chrome.runtime.onMessage.addListener((msg) => {
-      if (msg && msg.type === "ppu-set-enabled") {
+      if (!msg || typeof msg !== "object") return;
+      if (msg.type === "ppu-set-enabled") {
         setEnabledLocal(!!msg.enabled);
+      }
+      if (msg.type === "ppu-set-alexa-off") {
+        applyAlexaOff(!!msg.alexaOff);
       }
     });
   } catch (_) {}
@@ -518,8 +637,10 @@
       clearBadges();
       // recreate overlay only if still enabled
       removeOverlay();
+      if (alexaOff) reapAlexa();
     }
     if (enabled) ensureOverlay();
+    if (alexaOff) reapAlexa();
   }
 
   function init() {
