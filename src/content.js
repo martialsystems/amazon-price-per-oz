@@ -449,7 +449,9 @@
     }
 
     if (scored.length === 0) {
-      setStatus(`No unit prices · ${cards.length} products seen`);
+      setStatus(
+        `No unit prices · ${cards.length} products seen · use Amazon price sort for single items`
+      );
       return;
     }
 
@@ -590,6 +592,7 @@
       <div id="ppu-status" class="ppu-status">Click Sort when results look ready</div>
       <button type="button" id="ppu-sort" class="ppu-btn ppu-btn-primary">Sort Now</button>
       <button type="button" id="ppu-disable" class="ppu-btn ppu-btn-muted">Disable</button>
+      <div class="ppu-note">Only sorts when a unit price exists (oz, fl oz, count, etc.). For single items like a coffee maker, use Amazon’s Sort by: Price · Low to High.</div>
     `;
     document.body.appendChild(overlay);
 

@@ -1,6 +1,6 @@
 # Unit Price Sort for Amazon Search
 
-**Martial Systems LLC** product — Chrome extension that ranks Amazon **search results** by **price per unit**.
+**Martial Systems LLC** product: Chrome extension that ranks Amazon **search results** by **price per unit**.
 
 | | |
 |--|--|
@@ -8,7 +8,7 @@
 | **Support** | martialsys@gmail.com |
 | **Web** | https://martialsys.net/ |
 | **Version** | 2.3.0 |
-| **License** | Proprietary — see [LICENSE](LICENSE) and [Terms](docs/TERMS_OF_USE.md) |
+| **License** | Proprietary: see [LICENSE](LICENSE) and [Terms](docs/TERMS_OF_USE.md) |
 
 Not affiliated with Amazon.com, Inc.
 
@@ -19,6 +19,8 @@ Not affiliated with Amazon.com, Inc.
 3. Open an Amazon search (groceries work best)
 4. Click **Sort Now** on the teal panel
 5. Read badges like `#1 · $0.12/oz`
+
+**When it helps:** Sort Now only ranks listings that have a real unit price (Amazon’s $/oz line, or a package size in the title). Listings without one are skipped. For single items that are effectively quantity 1 (a coffee maker, a lamp, etc.), use Amazon’s own **Sort by: Price · Low to High** instead.
 
 ### Enable / disable
 
