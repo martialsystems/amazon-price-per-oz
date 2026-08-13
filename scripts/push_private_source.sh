@@ -23,7 +23,7 @@ rsync -a \
 cd "$TMP/src"
 git init -q -b main
 git add .
-git -c user.name="Martial Systems LLC" -c user.email="martialsys@gmail.com" \
+git -c user.name="Martial Systems LLC" -c user.email="25778085+martialsystems@users.noreply.github.com" \
   commit -q -m "Unit Price Sort source (private snapshot)."
 git remote add origin "https://github.com/${SRC_REPO}.git"
 git push --force origin main
