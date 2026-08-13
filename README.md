@@ -34,6 +34,19 @@ Not affiliated with Amazon.com, Inc.
 
 Unit-sort ON/OFF is in-memory for the browser session only. **Keep Alexa off** is a single boolean preference (not shopping data).
 
+## Publish (Releases only)
+
+Public GitHub is a landing page. Source stays on the private `src` remote.
+
+```bash
+./scripts/install_dev_hooks.sh
+./scripts/push_private_source.sh
+./scripts/publish_public_landing.sh
+./scripts/publish_github_release.sh
+```
+
+Details: [docs/DEV_REMOTES.md](docs/DEV_REMOTES.md).
+
 ## Chrome Web Store upload
 
 Full paste kit + checklist: **[docs/CHROME_WEB_STORE.md](docs/CHROME_WEB_STORE.md)**
