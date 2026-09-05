@@ -1,47 +1,45 @@
-# Amazon page types (probed 2026-08)
+# Amazon page types (getCards)
 
-Offline HTML samples were fetched from live Amazon.com to classify layouts.
-Bot-stripped pages may lack prices; structure signals still hold in a real browser.
+`getCards()` selects search tiles only:
 
-## Supported (full sort + badges)
+`[data-component-type="s-search-result"][data-asin]`
 
-| Type | URL pattern | Card DOM | Notes |
-|------|-------------|----------|--------|
-| **Search results** | `/s?k=…`, `/s?…` | `[data-component-type="s-search-result"][data-asin]`, `.s-main-slot .s-result-item[data-asin]`, often `role="listitem"` | Primary target. Unit prices like `($0.82 /  fluid ounce)`. |
-| **Department search** | `/s?k=…&rh=n:…` | Same as search | Same widget as organic search. |
-| **Grocery search** | `/s?k=…&i=grocery` | Same as search | Best unit-price coverage. |
+Visible tiles with ASIN length ≥ 5. Nested tiles (ATC faceouts inside another tile) are dropped.
 
-## Supported (badge + sort only within same parent)
+There is no browse/deals/bestsellers card strategy.
+
+## Supported (search tiles)
 
 | Type | URL pattern | Card DOM | Notes |
 |------|-------------|----------|--------|
-| **Browse / storefront** | `/b?node=…` | `.dcl-product`, `.a-cardui.dcl-product` | OTC disco etc. Carousels — **must not** reorder across the whole page. |
-| **Today’s Deals** | `/gp/goldbox`, deals | `.dcl-product` | Similar storefront cards. |
+| **Search results** | `/s?k=…`, `/s?…` | `[data-component-type="s-search-result"][data-asin]` | Primary target. Unit prices like `($0.82 /  fluid ounce)`. |
+| **Department search** | `/s?k=…&rh=n:…` | Same selector | Same widget as organic search, only if those tiles exist. |
+| **Grocery search** | `/s?k=…&i=grocery` | Same selector | Best unit-price coverage. |
 
-## Limited / best-effort
+`isSearchPage()` is a URL/DOM hint (`/s`, `?k=`, or an `s-search-result` / `.s-main-slot` node). Sort still runs only on `getCards()` tiles.
 
-| Type | URL pattern | Card DOM | Notes |
-|------|-------------|----------|--------|
-| **Best Sellers** | `/Best-Sellers/zgbs`, `/zgbs/…` | `.zg-grid-general-faceout`, `#gridItemRoot`, `[id^=p13n-asin-index]` | Ranked lists; unit price rare. Badge if price+size found. |
-
-## Intentionally ignored
+## Not supported
 
 | Type | URL pattern | Why |
 |------|-------------|-----|
+| **Browse / storefront** | `/b?node=…` | No `s-search-result[data-asin]` tiles. `getCards()` returns empty. |
+| **Today’s Deals** | `/gp/goldbox`, deals | Same: not search tiles. |
+| **Best Sellers** | `/Best-Sellers/zgbs`, `/zgbs/…` | Same: ranked lists are not search tiles. |
 | **Product detail** | `/dp/ASIN`, `/gp/product/` | Single item; nothing to sort. |
-| **Home / gateway** | `/` | No listing to sort; `/dp/` links everywhere would break the page. |
-| **Random pages with product links** | anything else | Aggressive “climb from `/dp/`” was breaking browse pages. |
+| **Home / gateway** | `/` | No listing to sort. |
+| **Random pages with product links** | anything else | No `/dp/` climb, no `.dcl-product`, no `#gridItemRoot`. |
 
 ## Failure mode that was fixed
 
 On `/b?node=…` (e.g. OTC disco), there are **hundreds of `/dp/` links** and **zero** `s-search-result` nodes.
-Old fallback treated random ancestors of those links as “cards” and reordered them → broken layout / weird errors.
+Old fallback treated random ancestors of those links as “cards” and reordered them.
 
-**Rule:** only use search-result strategies on search URLs; use `dcl-product` only on browse/deals; never body-wide `/dp/` climb.
+**Rule:** only `s-search-result[data-asin]` tiles. Empty card list means no sort.
 
 ## Unit-price string formats observed
 
-- `($0.82 /  fluid ounce)` — spaces around `/`
+- `($0.82 /  fluid ounce)`: spaces around `/`
 - `($5.13 /  ounce)`
-- `($133.29 / 100 Sheets)` — quantity in the unit side
-- `($7.75/count)` — compact form
+- `($133.29 / 100 Sheets)`: quantity in the unit side (toilet paper)
+- `$0.38 $0.38 /100 Sheets`: search-tile `a-offscreen` often repeats the price
+- `($7.75/count)`: compact form

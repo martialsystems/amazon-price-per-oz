@@ -17,10 +17,8 @@ const ALEXA_KEY = "alexaOff";
 
 const AMAZON_URLS = [
   "*://*.amazon.com/*",
-  "*://*.amazon.co.uk/*",
   "*://*.amazon.ca/*",
   "*://*.amazon.com.au/*",
-  "*://*.amazon.de/*",
 ];
 
 function applyBadge() {

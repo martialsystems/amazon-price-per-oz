@@ -173,7 +173,12 @@
       .trim();
   }
 
-  /** qty of `unit` → amount in base kind (oz | fl oz | count) */
+  function parseNum(s) {
+    const n = parseFloat(String(s).replace(/,/g, ""));
+    return Number.isFinite(n) ? n : NaN;
+  }
+
+  /** qty of `unit` → amount in base kind (oz | fl oz | sheet | count) */
   function toBase(qty, unit) {
     const u = normUnit(unit);
     if (!Number.isFinite(qty) || qty <= 0) return null;
@@ -193,13 +198,21 @@
       u === "fluid ounces"
     )
       return { n: qty, kind: "fl oz" };
-    if (u === "ml" || u === "milliliter" || u === "millilitre" || u === "milliliters")
+    if (
+      u === "ml" ||
+      u === "milliliter" ||
+      u === "millilitre" ||
+      u === "milliliters" ||
+      u === "millilitres"
+    )
       return { n: qty / 29.5735, kind: "fl oz" };
-    if (u === "l" || u === "liter" || u === "litre" || u === "liters")
+    if (u === "l" || u === "liter" || u === "litre" || u === "liters" || u === "litres")
       return { n: (qty * 1000) / 29.5735, kind: "fl oz" };
 
+    if (u === "sheet" || u === "sheets") return { n: qty, kind: "sheet" };
+
     if (
-      /^(count|ct|each|ea|sheet|sheets|capsule|capsules|tablet|tablets|softgel|softgels|pack|packs|can|cans|wipe|wipes|piece|pieces)$/.test(
+      /^(count|ct|each|ea|capsule|capsules|tablet|tablets|softgel|softgels|pack|packs|can|cans|wipe|wipes|piece|pieces)$/.test(
         u
       )
     )
@@ -209,7 +222,7 @@
   }
 
   const UNIT_RE =
-    "(?:fl(?:uid)?\\.?\\s*oz|floz|fluid\\s*ounces?|ounces?|oz|lbs?|pounds?|kg|g|grams?|ml|l|lit(?:er|re)s?|count|ct|each|ea|sheets?|capsules?|tablets?|softgels?|packs?|cans?|wipes?|pieces?)";
+    "(?:fl(?:uid)?\\.?\\s*oz|floz|fluid\\s*ounces?|ounces?|oz|lbs?|pounds?|kilograms?|kg|grams?|g|millilit(?:er|re)s?|ml|lit(?:er|re)s?|l|count|ct|each|ea|sheets?|capsules?|tablets?|softgels?|packs?|cans?|wipes?|pieces?)";
 
   function fmt(ppu, kind) {
     const d = ppu < 0.01 ? 4 : ppu < 1 ? 3 : 2;
@@ -217,29 +230,54 @@
     return `$${ppu.toFixed(d)}/${k}`;
   }
 
+  function kindTier(kind) {
+    if (kind === "oz" || kind === "fl oz") return 0;
+    if (kind === "sheet" || kind === "count") return 1;
+    return 2;
+  }
+
+  /** Sort: mass/volume, then sheet/count (same tier), else last; then ppu.
+   * Do not pack ppu into `tier * 1e12`: ULP at 1e12 is ~0.000122, so
+   * $0.0024/sheet vs $0.0025/sheet compare equal and Sort Now does not move. */
+  function cmpInfo(a, b) {
+    const ta = kindTier(a.kind);
+    const tb = kindTier(b.kind);
+    if (ta !== tb) return ta - tb;
+    return a.ppu - b.ppu;
+  }
+
+  function kindRank(kind) {
+    if (kind === "oz" || kind === "fl oz") return 0;
+    if (kind === "sheet") return 1;
+    if (kind === "count") return 2;
+    return 3;
+  }
+
   /** Amazon strings: ($0.82 /  fluid ounce), ($133.29 / 100 Sheets), $0.19/ounce */
   function parseAmazonUnit(text) {
     if (!text) return null;
     const t = text.replace(/\u00a0/g, " ");
-    const re = /\(?\s*\$\s*([\d,]+(?:\.\d+)?)\s*\/\s*([^)\n]{1,40}?)\)?/g;
+    // Required UNIT_RE token (optional leading qty). `)` terminates; do not
+    // lazily eat one char after `/` with optional `)`.
+    const re = new RegExp(
+      `\\(?\\s*\\$\\s*([\\d,]+(?:\\.\\d+)?)\\s*/\\s*(?:(\\d+(?:\\.\\d+)?)\\s*)?(${UNIT_RE})(?=\\s*\\)|\\b)`,
+      "gi"
+    );
     let best = null;
     let m;
     while ((m = re.exec(t))) {
       const price = parseFloat(m[1].replace(/,/g, ""));
       if (!Number.isFinite(price) || price <= 0) continue;
-      let unitStr = m[2].trim().replace(/\s+/g, " ");
-      let qty = 1;
-      const qm = unitStr.match(new RegExp(`^(\\d+(?:\\.\\d+)?)\\s*(${UNIT_RE})$`, "i"));
-      if (qm) {
-        qty = parseFloat(qm[1]);
-        unitStr = qm[2];
-      }
+      const qty = m[2] != null && m[2] !== "" ? parseNum(m[2]) : 1;
+      const unitStr = m[3].trim().replace(/\s+/g, " ");
+      if (!Number.isFinite(qty) || qty <= 0) continue;
       const base = toBase(qty, unitStr);
       if (!base) continue;
       const ppu = price / base.n;
       if (!Number.isFinite(ppu) || ppu <= 0) continue;
-      // prefer mass/volume over count when both appear
-      if (!best || (best.kind === "count" && base.kind !== "count") || ppu < best.ppu) {
+      const betterKind = !best || kindRank(base.kind) < kindRank(best.kind);
+      const sameKindCheaper = best && kindRank(base.kind) === kindRank(best.kind) && ppu < best.ppu;
+      if (betterKind || sameKindCheaper) {
         best = { ppu, kind: base.kind, label: fmt(ppu, base.kind), src: "amazon" };
       }
     }
@@ -249,43 +287,87 @@
   function parseSize(text) {
     if (!text) return null;
     const t = text.replace(/\u00a0/g, " ");
+    const hits = [];
+    const NUM = "(\\d{1,3}(?:,\\d{3})+|\\d+(?:\\.\\d+)?)";
 
-    // 6 lb 10 oz
-    let m = t.match(/(\d+(?:\.\d+)?)\s*(?:lbs?|pounds?)\s+(\d+(?:\.\d+)?)\s*(?:oz|ounces?)\b/i);
-    if (m) {
-      const n = parseFloat(m[1]) * 16 + parseFloat(m[2]);
-      if (n > 0) return { n, kind: "oz" };
+    function consider(b) {
+      if (b && Number.isFinite(b.n) && b.n > 0) hits.push({ n: b.n, kind: b.kind });
     }
 
-    // 29 oz … 4 Pack
-    m = t.match(
-      new RegExp(
-        `(\\d+(?:\\.\\d+)?)\\s*(${UNIT_RE})\\b[\\s\\S]{0,50}?\\b(?:pack\\s+of\\s+)?(\\d+)\\s*(?:packs?|count|ct|cans?)\\b`,
-        "i"
-      )
+    function firstPackRolls(text) {
+      const re =
+        /([\d,]+)\s*(?:family\s+)?(?:super\s+)?(?:mega\s+|double\s+|triple\s+|xl\s+)?rolls?\b/gi;
+      let rm;
+      while ((rm = re.exec(text))) {
+        const before = text.slice(Math.max(0, rm.index - 16), rm.index).toLowerCase();
+        if (/\bregular\s*$/.test(before)) continue;
+        if (/=\s*$/.test(before)) continue;
+        const n = parseNum(rm[1]);
+        if (n > 1) return n;
+      }
+      const caseOf = /(?:case|pack)\s+of\s+([\d,]+)/i.exec(text);
+      if (caseOf) {
+        const n = parseNum(caseOf[1]);
+        if (n > 1) return n;
+      }
+      return null;
+    }
+
+    // 6 lb 10 oz
+    const lbOzRe =
+      /(\d+(?:\.\d+)?)\s*(?:lbs?|pounds?)\s+(\d+(?:\.\d+)?)\s*[- ]?\s*(?:oz|ounces?)\b/gi;
+    let m;
+    while ((m = lbOzRe.exec(t))) {
+      const n = parseFloat(m[1]) * 16 + parseFloat(m[2]);
+      consider({ n, kind: "oz" });
+    }
+
+    // 4 x 29 oz: pack factor only when written as N x size
+    const nxRe = new RegExp(
+      `${NUM}\\s*[x×]\\s*${NUM}\\s*[- ]?(${UNIT_RE})\\b`,
+      "gi"
     );
-    if (m) {
-      const packs = parseFloat(m[3]);
-      if (packs > 1) {
-        const b = toBase(parseFloat(m[1]) * packs, m[2]);
-        if (b) return b;
+    while ((m = nxRe.exec(t))) {
+      consider(toBase(parseNum(m[1]) * parseNum(m[2]), m[3]));
+    }
+
+    // Every number[- ]unit token (16-ounce, 16 oz, 16oz, 37,840 sheets)
+    const tokRe = new RegExp(`${NUM}\\s*[- ]?(${UNIT_RE})\\b`, "gi");
+    const tokens = [];
+    while ((m = tokRe.exec(t))) {
+      const b = toBase(parseNum(m[1]), m[2]);
+      if (b) tokens.push(b);
+    }
+    for (const tok of tokens) consider(tok);
+
+    const perRoll = new RegExp(`${NUM}\\s*sheets?\\s+per\\s+roll\\b`, "i").exec(t);
+    const rolls = firstPackRolls(t);
+    if (perRoll && rolls) {
+      consider({ n: parseNum(perRoll[1]) * rolls, kind: "sheet" });
+    }
+
+    // Multiply mass/volume/sheets for an explicit pack factor ("4 pack", "pack of 4", "case of 96")
+    const packRe =
+      /(?:(\d+)\s*-?\s*packs?\b|\bpack(?:s)?\s+of\s+(\d+)\b|\bcase\s+of\s+(\d+)\b)/gi;
+    let packFactor = null;
+    while ((m = packRe.exec(t))) {
+      const n = parseFloat(m[1] || m[2] || m[3]);
+      if (n > 1) packFactor = n;
+    }
+    if (packFactor) {
+      for (const tok of tokens) {
+        if (tok.kind !== "count") consider({ n: tok.n * packFactor, kind: tok.kind });
       }
     }
 
-    // 4 x 29 oz
-    m = t.match(new RegExp(`(\\d+)\\s*[x×]\\s*(\\d+(?:\\.\\d+)?)\\s*(${UNIT_RE})\\b`, "i"));
-    if (m) {
-      const b = toBase(parseFloat(m[1]) * parseFloat(m[2]), m[3]);
-      if (b) return b;
-    }
-
-    // plain 16 oz / 60 capsules
-    m = t.match(new RegExp(`(\\d+(?:\\.\\d+)?)\\s*(${UNIT_RE})\\b`, "i"));
-    if (m) {
-      const b = toBase(parseFloat(m[1]), m[2]);
-      if (b) return b;
-    }
-    return null;
+    if (!hits.length) return null;
+    hits.sort((a, b) => {
+      const ra = kindRank(a.kind);
+      const rb = kindRank(b.kind);
+      if (ra !== rb) return ra - rb;
+      return b.n - a.n;
+    });
+    return { n: hits[0].n, kind: hits[0].kind };
   }
 
   function cardPrice(card) {
@@ -323,7 +405,8 @@
     const size = parseSize(title) || parseSize(blob);
     if (!size) return null;
     const ppu = price / size.n;
-    if (!Number.isFinite(ppu) || ppu <= 0 || ppu > price * 1.01) return null;
+    if (!Number.isFinite(ppu) || ppu <= 0) return null;
+    if ((size.kind === "count" || size.kind === "sheet") && size.n <= 1) return null;
     return { ppu, kind: size.kind, label: fmt(ppu, size.kind), src: "computed" };
   }
 
@@ -379,12 +462,6 @@
   }
 
   // ---- sort (click only) --------------------------------------------------
-
-  function sortKey(info) {
-    // oz / fl oz first tier, then count
-    const tier = info.kind === "count" ? 1 : info.kind === "oz" || info.kind === "fl oz" ? 0 : 2;
-    return tier * 1e12 + info.ppu;
-  }
 
   /**
    * Move only direct siblings under the same parent.
@@ -455,7 +532,7 @@
       return;
     }
 
-    scored.sort((a, b) => sortKey(a.info) - sortKey(b.info) || 0);
+    scored.sort((a, b) => cmpInfo(a.info, b.info));
 
     // Rank badges first (always useful)
     scored.forEach((s, i) => badge(s.card, s.info.label, i + 1));
@@ -592,7 +669,7 @@
       <div id="ppu-status" class="ppu-status">Click Sort when results look ready</div>
       <button type="button" id="ppu-sort" class="ppu-btn ppu-btn-primary">Sort Now</button>
       <button type="button" id="ppu-disable" class="ppu-btn ppu-btn-muted">Disable</button>
-      <div class="ppu-note">Only sorts when a unit price exists (oz, fl oz, count, etc.). For single items like a coffee maker, use Amazon’s Sort by: Price · Low to High.</div>
+      <div class="ppu-note">Only sorts when a unit price exists (oz, fl oz, sheets, count). Toilet paper ranks by price per sheet. For single items like a coffee maker, use Amazon’s Sort by: Price · Low to High.</div>
     `;
     document.body.appendChild(overlay);
 
