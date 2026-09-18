@@ -112,7 +112,68 @@ assert.ok(
   "IEEE proof: adjacent $/100-sheet steps collide when packed"
 );
 
+section("Keep Alexa off hides Ask Alexa without deguttering #dp");
+const css = fs.readFileSync(path.join(__dirname, "../src/content.css"), "utf8");
+assert.equal(/html\.ppu-alexa-off #dp\b/.test(css), false, "must not zero #dp");
+assert.equal(/html\.ppu-alexa-off #a-page\b/.test(css), false, "must not zero #a-page");
+assert.equal(/html\.ppu-alexa-off #search\b/.test(css), false, "must not zero #search");
+assert.equal(/html\.ppu-alexa-off main\b/.test(css), false, "must not zero main");
+assert.equal(/html\.ppu-alexa-off \[role="main"\]/.test(css), false);
+assert.equal(/padding-left:\s*0\s*!important/.test(css), false, "must not steal page padding");
+assert.equal(/margin-left:\s*0\s*!important/.test(css), false, "must not steal page margin");
+assert.ok(/ask alexa/i.test(src));
+assert.ok(/isAlexaProtected/.test(src));
+assert.ok(/alexaHideTarget/.test(src));
+assert.ok(/withScrollPinned/.test(src));
+assert.ok(/hideAskAlexaCards/.test(src));
+assert.ok(/"dp"/.test(src) && /centerCol/.test(src) && /ppd/.test(src));
+assert.equal(/b\.classList\.remove\(c\)/.test(src), false, "must not strip body dock classes");
+assert.equal(/\[id\*="rufus"\]/.test(src), false, "wildcard rufus id hides the page");
+assert.equal(/\[id\*="ask-alexa"\]/.test(src), false, "wildcard ask-alexa id can be the column");
+
+section("alexaHideTarget stops at #dp and hides the Ask Alexa card");
+const hStart = src.indexOf("const ALEXA_PROTECTED_IDS");
+const hEnd = src.indexOf("function hideAlexaNode");
+assert.ok(hStart >= 0 && hEnd > hStart, "alexa helpers missing");
+const ctx = { Set, String, document: { body: {}, documentElement: {} } };
+vm.runInNewContext(src.slice(hStart, hEnd), ctx);
+assert.equal(typeof ctx.alexaHideTarget, "function");
+function el(spec) {
+  return {
+    id: spec.id || "",
+    nodeType: 1,
+    className: spec.className || "",
+    parentElement: spec.parent || null,
+    hasAttribute(name) {
+      return !!(spec.attrs && Object.prototype.hasOwnProperty.call(spec.attrs, name));
+    },
+    getAttribute(name) {
+      return spec.attrs ? spec.attrs[name] : null;
+    },
+    closest() {
+      return null;
+    },
+    innerText: spec.text || "",
+    textContent: spec.text || "",
+  };
+}
+const dp = el({ id: "dp" });
+const card = el({ id: "ask-card", className: "a-cardui", parent: dp });
+const heading = el({ text: "Ask Alexa", parent: card });
+assert.strictEqual(ctx.alexaHideTarget(heading), card);
+assert.strictEqual(ctx.alexaHideTarget(dp), null);
+assert.ok(ctx.isAskAlexaHeading(heading));
+assert.ok(
+  !ctx.isAskAlexaHeading(
+    el({ text: "Ask Alexa about this huge block of chips and more text" })
+  )
+);
+
 section("grocery oz / fl oz still parse");
+const cologne = parseAmazonUnit("$13.99 ($4.14 / fluid ounce)");
+assert.ok(cologne);
+assert.strictEqual(cologne.kind, "fl oz");
+assert.ok(Math.abs(cologne.ppu - 4.14) < 1e-9);
 const fl = parseAmazonUnit("($0.82 /  fluid ounce)");
 assert.ok(fl);
 assert.strictEqual(fl.kind, "fl oz");

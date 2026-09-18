@@ -36,9 +36,29 @@
     '[class*="rufus-panel"]',
     '[class*="rufus-chat"]',
     '[class*="alexa-shopping"]',
-    '[id*="rufus"]',
+    "#ask-alexa",
     '[id*="AlexaShopping"]',
   ].join(",");
+
+  // Never hide these: hiding #dp / #a-page / main is what "moves the page back".
+  const ALEXA_PROTECTED_IDS = new Set([
+    "a-page",
+    "pageContent",
+    "search",
+    "dp",
+    "nav-main",
+    "nav-belt",
+    "navbar",
+    "dp-container",
+    "ppd",
+    "centerCol",
+    "leftCol",
+    "rightCol",
+    "navFooter",
+    "s-refinements",
+    "hmenu-canvas",
+    "ppu-overlay",
+  ]);
 
   function setEnabledLocal(next) {
     enabled = !!next;
@@ -63,12 +83,54 @@
     }
   }
 
+  function isAlexaProtected(el) {
+    if (!el || el === document.body || el === document.documentElement) return true;
+    if (el.id && ALEXA_PROTECTED_IDS.has(el.id)) return true;
+    if (el.getAttribute && el.getAttribute("role") === "main") return true;
+    if (el.closest && el.closest("#ppu-overlay, #nav-main, #hmenu-canvas, #s-refinements"))
+      return true;
+    return false;
+  }
+
+  function alexaHideTarget(start) {
+    if (!start || start.nodeType !== 1 || isAlexaProtected(start)) return null;
+    let el = start;
+    let best = start;
+    for (let i = 0; i < 10 && el.parentElement; i++) {
+      const p = el.parentElement;
+      if (isAlexaProtected(p)) break;
+      el = p;
+      best = el;
+      const id = String(el.id || "").toLowerCase();
+      const cls = String(el.className || "").toLowerCase();
+      if (
+        (el.hasAttribute && el.hasAttribute("data-cel-widget")) ||
+        cls.includes("a-cardui") ||
+        id.includes("ask-alexa") ||
+        cls.includes("ask-alexa") ||
+        cls.includes("askalexa")
+      ) {
+        return el;
+      }
+    }
+    return isAlexaProtected(best) ? null : best;
+  }
+
+  function isAskAlexaHeading(el) {
+    if (!el || el.nodeType !== 1) return false;
+    const label = String(el.getAttribute?.("aria-label") || el.getAttribute?.("alt") || "")
+      .replace(/\s+/g, " ")
+      .trim();
+    if (/^ask alexa$/i.test(label)) return true;
+    const text = String(el.innerText || el.textContent || "")
+      .replace(/\s+/g, " ")
+      .trim();
+    return text.length <= 24 && /^ask alexa$/i.test(text);
+  }
+
   function hideAlexaNode(el) {
     if (!el || el.nodeType !== 1) return;
-    // Never hide chrome that is not the shopping assistant
-    if (el.id === "nav-main" || el.id === "navbar" || el.id === "a-page") return;
-    if (el.closest && el.closest("#ppu-overlay, #nav-main, #hmenu-canvas, #s-refinements"))
-      return;
+    if (isAlexaProtected(el)) return;
     try {
       el.style.setProperty("display", "none", "important");
       el.style.setProperty("visibility", "hidden", "important");
@@ -77,22 +139,43 @@
     } catch (_) {}
   }
 
+  function hideAskAlexaCards() {
+    const nodes = document.querySelectorAll(
+      'h1,h2,h3,h4,h5,span,p,a,button,img,[aria-label],[role="heading"]'
+    );
+    for (const el of nodes) {
+      if (!isAskAlexaHeading(el)) continue;
+      const target = alexaHideTarget(el);
+      if (target) hideAlexaNode(target);
+    }
+  }
+
+  function withScrollPinned(fn) {
+    let x = 0;
+    let y = 0;
+    try {
+      x = window.scrollX;
+      y = window.scrollY;
+    } catch (_) {}
+    try {
+      fn();
+    } finally {
+      try {
+        if (window.scrollX !== x || window.scrollY !== y) window.scrollTo(x, y);
+      } catch (_) {}
+    }
+  }
+
   function reapAlexa() {
     if (!alexaOff) return;
-    try {
-      document.querySelectorAll(ALEXA_SELECTORS).forEach(hideAlexaNode);
-    } catch (_) {}
-    // Strip body dock classes that reserve the side gutter
-    try {
-      const b = document.body;
-      if (!b) return;
-      for (const c of Array.from(b.classList)) {
-        const t = c.toLowerCase();
-        if (t.includes("rufus") || t.includes("copilot") || t.includes("alexa-shopping")) {
-          b.classList.remove(c);
-        }
-      }
-    } catch (_) {}
+    withScrollPinned(() => {
+      try {
+        document.querySelectorAll(ALEXA_SELECTORS).forEach(hideAlexaNode);
+      } catch (_) {}
+      try {
+        hideAskAlexaCards();
+      } catch (_) {}
+    });
   }
 
   function startAlexaWatch() {

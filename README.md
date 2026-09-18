@@ -7,7 +7,7 @@
 | **Publisher** | Martial Systems LLC |
 | **Support** | martialsys@gmail.com |
 | **Web** | https://martialsys.net/ |
-| **Version** | 2.3.1 |
+| **Version** | 2.3.2 |
 | **License** | Proprietary: see [LICENSE](LICENSE) and [Terms](docs/TERMS_OF_USE.md) |
 
 Not affiliated with Amazon.com, Inc.
@@ -29,7 +29,7 @@ Not affiliated with Amazon.com, Inc.
 | Overlay **Disable** | Hides panel + badges; toolbar shows **OFF** |
 | **Click pinned icon** | Toggles ON/OFF on all open Amazon tabs |
 | Icon badge **OFF** | Extension is disabled until you click again |
-| **Right-click** icon → **Keep Alexa off** | Checkbox: hide Alexa-for-Shopping UI (persists until unchecked) |
+| **Right-click** icon → **Keep Alexa off** | Checkbox: hide Alexa-for-Shopping / Ask Alexa UI (persists). Does not shift the product page layout. |
 | **Right-click** icon → **Donate (Ko-fi)** | Opens https://ko-fi.com/martialgames |
 
 Unit-sort ON/OFF is in-memory for the browser session only. **Keep Alexa off** is a single boolean preference (not shopping data).

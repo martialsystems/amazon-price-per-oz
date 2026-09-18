@@ -106,7 +106,6 @@ html.ppu-alexa-off div[data-copilot-name],
 html.ppu-alexa-off [class*="rufus-panel"],
 html.ppu-alexa-off [class*="rufus-chat"],
 html.ppu-alexa-off [class*="alexa-shopping"],
-html.ppu-alexa-off [id*="rufus"],
 html.ppu-alexa-off [id*="AlexaShopping"],
 html.ppu-alexa-off [data-ppu-alexa-hidden="1"] {
   display: none !important;
@@ -116,21 +115,4 @@ html.ppu-alexa-off [data-ppu-alexa-hidden="1"] {
   visibility: hidden !important;
   pointer-events: none !important;
   overflow: hidden !important;
-}
-
-/* Reclaim left gutter when the assistant was docking the page */
-html.ppu-alexa-off body[class*="rufus"],
-html.ppu-alexa-off body[class*="copilot"] {
-  padding-left: 0 !important;
-  margin-left: 0 !important;
-}
-
-html.ppu-alexa-off #a-page,
-html.ppu-alexa-off #pageContent,
-html.ppu-alexa-off #search,
-html.ppu-alexa-off #dp,
-html.ppu-alexa-off main,
-html.ppu-alexa-off [role="main"] {
-  margin-left: 0 !important;
-  padding-left: 0 !important;
 }

@@ -197,7 +197,8 @@ Confirm **Active** status on [INBiz Business Search](https://bsd.sos.in.gov/publ
 - [ ] Toolbar OFF / ON  
 - [ ] Overlay Disable = toolbar OFF  
 - [ ] Drag overlay title  
-- [ ] Keep Alexa off checked → assistant stays hidden; uncheck restores  
+- [ ] Keep Alexa off checked → assistant stays hidden; uncheck restores
+- [ ] Keep Alexa off on a `/dp/` page hides Ask Alexa and does not shift `#dp` / the product column  
 - [ ] Donate opens Ko-fi  
 - [ ] Non-Amazon site → no overlay  
 - [ ] No uncaught extension errors on a normal search  
