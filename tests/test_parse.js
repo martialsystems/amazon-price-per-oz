@@ -126,10 +126,14 @@ assert.ok(/isAlexaProtected/.test(src));
 assert.ok(/alexaHideTarget/.test(src));
 assert.ok(/withScrollPinned/.test(src));
 assert.ok(/hideAskAlexaCards/.test(src));
+assert.ok(/createTreeWalker/.test(src));
+assert.ok(/ask something else/i.test(src));
 assert.ok(/"dp"/.test(src) && /centerCol/.test(src) && /ppd/.test(src));
 assert.equal(/b\.classList\.remove\(c\)/.test(src), false, "must not strip body dock classes");
 assert.equal(/\[id\*="rufus"\]/.test(src), false, "wildcard rufus id hides the page");
 assert.equal(/\[id\*="ask-alexa"\]/.test(src), false, "wildcard ask-alexa id can be the column");
+const manifest = fs.readFileSync(path.join(__dirname, "../manifest.json"), "utf8");
+assert.ok(/"all_frames"\s*:\s*true/.test(manifest));
 
 section("alexaHideTarget stops at #dp and hides the Ask Alexa card");
 const hStart = src.indexOf("const ALEXA_PROTECTED_IDS");
@@ -158,11 +162,25 @@ function el(spec) {
   };
 }
 const dp = el({ id: "dp" });
-const card = el({ id: "ask-card", className: "a-cardui", parent: dp });
+const card = el({
+  id: "ask-card",
+  className: "a-section",
+  parent: dp,
+  text: "Ask Alexa What are the main scent notes? Why you might like this Ask something else",
+});
 const heading = el({ text: "Ask Alexa", parent: card });
 assert.strictEqual(ctx.alexaHideTarget(heading), card);
 assert.strictEqual(ctx.alexaHideTarget(dp), null);
-assert.ok(ctx.isAskAlexaHeading(heading));
+assert.ok(ctx.isAskAlexaSeedText("Ask Alexa"));
+assert.ok(ctx.isAskAlexaSeedText("Ask something else"));
+assert.ok(ctx.looksLikeAskAlexaCard(card));
+const fat = el({
+  id: "center-chunk",
+  parent: dp,
+  text: "Ask Alexa " + "x".repeat(3000) + " Ask something else",
+});
+const fatHeading = el({ text: "Ask Alexa", parent: fat });
+assert.strictEqual(ctx.alexaHideTarget(fatHeading), fatHeading);
 assert.ok(
   !ctx.isAskAlexaHeading(
     el({ text: "Ask Alexa about this huge block of chips and more text" })

@@ -7,7 +7,7 @@
 | **Publisher** | Martial Systems LLC |
 | **Support** | martialsys@gmail.com |
 | **Web** | https://martialsys.net/ |
-| **Version** | 2.3.2 |
+| **Version** | 2.3.3 |
 | **License** | Proprietary: see [LICENSE](LICENSE) and [Terms](docs/TERMS_OF_USE.md) |
 
 Not affiliated with Amazon.com, Inc.

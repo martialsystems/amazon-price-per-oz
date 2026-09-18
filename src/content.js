@@ -29,6 +29,8 @@
     ".nav-rufus-disco",
     ".nav-rufus-content",
     "#nav-flyout-rufus",
+    "#nav-rufus-disc-txt",
+    '[id^="nav-rufus"]',
     ".copilot-modal-container",
     ".copilot-chat-root",
     "aside[data-copilot-chat-root]",
@@ -92,28 +94,46 @@
     return false;
   }
 
+  function nodeText(el) {
+    return String(el && (el.innerText || el.textContent) || "")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function looksLikeAskAlexaCard(el) {
+    if (!el || el.nodeType !== 1) return false;
+    const t = nodeText(el);
+    if (!t || t.length > 2500) return false;
+    const hasTitle = /\bask alexa\b/i.test(t);
+    const hasElse = /ask something else/i.test(t);
+    const hasChip = /why you might like this/i.test(t);
+    if (hasTitle && (hasElse || hasChip)) return true;
+    if (hasElse && hasChip) return true;
+    if (hasTitle && t.length <= 40) return true;
+    return false;
+  }
+
   function alexaHideTarget(start) {
     if (!start || start.nodeType !== 1 || isAlexaProtected(start)) return null;
     let el = start;
-    let best = start;
-    for (let i = 0; i < 10 && el.parentElement; i++) {
+    let found = null;
+    for (let i = 0; i < 16; i++) {
+      if (isAlexaProtected(el)) break;
+      if (looksLikeAskAlexaCard(el)) found = el;
       const p = el.parentElement;
-      if (isAlexaProtected(p)) break;
+      if (!p || isAlexaProtected(p)) break;
       el = p;
-      best = el;
-      const id = String(el.id || "").toLowerCase();
-      const cls = String(el.className || "").toLowerCase();
-      if (
-        (el.hasAttribute && el.hasAttribute("data-cel-widget")) ||
-        cls.includes("a-cardui") ||
-        id.includes("ask-alexa") ||
-        cls.includes("ask-alexa") ||
-        cls.includes("askalexa")
-      ) {
-        return el;
-      }
     }
-    return isAlexaProtected(best) ? null : best;
+    if (found) return found;
+    const fallback = start;
+    return isAlexaProtected(fallback) ? null : fallback;
+  }
+
+  function isAskAlexaSeedText(raw) {
+    const t = String(raw || "")
+      .replace(/\s+/g, " ")
+      .trim();
+    return /^ask alexa$/i.test(t) || /^ask something else$/i.test(t);
   }
 
   function isAskAlexaHeading(el) {
@@ -121,11 +141,8 @@
     const label = String(el.getAttribute?.("aria-label") || el.getAttribute?.("alt") || "")
       .replace(/\s+/g, " ")
       .trim();
-    if (/^ask alexa$/i.test(label)) return true;
-    const text = String(el.innerText || el.textContent || "")
-      .replace(/\s+/g, " ")
-      .trim();
-    return text.length <= 24 && /^ask alexa$/i.test(text);
+    if (isAskAlexaSeedText(label)) return true;
+    return isAskAlexaSeedText(nodeText(el));
   }
 
   function hideAlexaNode(el) {
@@ -140,11 +157,33 @@
   }
 
   function hideAskAlexaCards() {
-    const nodes = document.querySelectorAll(
-      'h1,h2,h3,h4,h5,span,p,a,button,img,[aria-label],[role="heading"]'
-    );
-    for (const el of nodes) {
-      if (!isAskAlexaHeading(el)) continue;
+    const seeds = [];
+    const seen = new Set();
+    function addSeed(el) {
+      if (!el || el.nodeType !== 1 || seen.has(el)) return;
+      seen.add(el);
+      seeds.push(el);
+    }
+    try {
+      if (document.body) {
+        const tw = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+        let n;
+        while ((n = tw.nextNode())) {
+          if (isAskAlexaSeedText(n.nodeValue) && n.parentElement) addSeed(n.parentElement);
+        }
+      }
+    } catch (_) {}
+    try {
+      document.querySelectorAll("[aria-label], [alt]").forEach((el) => {
+        if (
+          isAskAlexaSeedText(el.getAttribute("aria-label")) ||
+          isAskAlexaSeedText(el.getAttribute("alt"))
+        ) {
+          addSeed(el);
+        }
+      });
+    } catch (_) {}
+    for (const el of seeds) {
       const target = alexaHideTarget(el);
       if (target) hideAlexaNode(target);
     }
