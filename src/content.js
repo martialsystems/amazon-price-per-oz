@@ -40,6 +40,11 @@
     '[class*="alexa-shopping"]',
     "#ask-alexa",
     '[id*="AlexaShopping"]',
+    /* Related-question carousel and its feedback row (observed 2026-09-28). */
+    ".rufus-papyrus-active-turn",
+    ".rufus-html-turn-contextual-pills",
+    ".rufus-sections-container",
+    '[data-csa-c-content-id="rufus-dsk-section-container"]',
   ].join(",");
 
   // Never hide these: hiding #dp / #a-page / main is what "moves the page back".

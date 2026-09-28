@@ -132,6 +132,15 @@ assert.ok(/"dp"/.test(src) && /centerCol/.test(src) && /ppd/.test(src));
 assert.equal(/b\.classList\.remove\(c\)/.test(src), false, "must not strip body dock classes");
 assert.equal(/\[id\*="rufus"\]/.test(src), false, "wildcard rufus id hides the page");
 assert.equal(/\[id\*="ask-alexa"\]/.test(src), false, "wildcard ask-alexa id can be the column");
+assert.equal(/\[class\*="rufus"\]/.test(src), false, "bare rufus class wildcard is too broad");
+assert.ok(src.includes(".rufus-papyrus-active-turn"));
+assert.ok(src.includes(".rufus-html-turn-contextual-pills"));
+assert.ok(src.includes(".rufus-sections-container"));
+assert.ok(src.includes("rufus-dsk-section-container"));
+assert.ok(css.includes(".rufus-papyrus-active-turn"));
+assert.ok(css.includes(".rufus-html-turn-contextual-pills"));
+assert.ok(css.includes(".rufus-sections-container"));
+assert.ok(css.includes("rufus-dsk-section-container"));
 const manifest = fs.readFileSync(path.join(__dirname, "../manifest.json"), "utf8");
 assert.ok(/"all_frames"\s*:\s*true/.test(manifest));
 

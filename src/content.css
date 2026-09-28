@@ -111,6 +111,10 @@ html.ppu-alexa-off [class*="rufus-panel"],
 html.ppu-alexa-off [class*="rufus-chat"],
 html.ppu-alexa-off [class*="alexa-shopping"],
 html.ppu-alexa-off [id*="AlexaShopping"],
+html.ppu-alexa-off .rufus-papyrus-active-turn,
+html.ppu-alexa-off .rufus-html-turn-contextual-pills,
+html.ppu-alexa-off .rufus-sections-container,
+html.ppu-alexa-off [data-csa-c-content-id="rufus-dsk-section-container"],
 html.ppu-alexa-off [data-ppu-alexa-hidden="1"] {
   display: none !important;
   width: 0 !important;
