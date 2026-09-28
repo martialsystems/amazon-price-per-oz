@@ -169,4 +169,4 @@ Governing jurisdiction: **Indiana, United States**
 
 ---
 
-© 2026 Martial Systems LLC. All rights reserved.
+Copyright © 2026 Martial Systems LLC. All rights reserved.

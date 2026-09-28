@@ -1,5 +1,5 @@
 /**
- * Unit Price Sort for Amazon Search — Martial Systems LLC
+ * Unit Price Sort for Amazon Search
  * Copyright (c) 2026 Martial Systems LLC. All rights reserved.
  *
  * Lean hybrid: manual Sort Now, Amazon unit-price + title fallback,
@@ -493,7 +493,7 @@
   }
 
   function cardPrice(card) {
-    // Main list price only — skip tiny unit-price lines
+    // Main list price only. Skip tiny unit-price lines.
     for (const el of card.querySelectorAll(".a-price .a-offscreen")) {
       const nearby = (el.parentElement?.parentElement?.textContent || "").slice(0, 60);
       if (/\/\s*(oz|ounce|fl|count|sheet)/i.test(nearby) && nearby.length < 50) continue;
@@ -619,7 +619,7 @@
       if (nested) continue;
 
       try {
-        // appendChild moves existing children to end — preserves parent, cheap
+        // appendChild moves existing children to the end and keeps the parent.
         for (const g of group) parent.appendChild(g.card);
         moved += group.length;
       } catch (_) {
@@ -692,7 +692,7 @@
 
   // ---- overlay ------------------------------------------------------------
 
-  // In-memory only (tab session) — not written to disk
+  // In-memory only (tab session). Not written to disk.
   let dragPos = null; // { left, top } after user drags
   let dragCleanup = null;
 
@@ -850,7 +850,7 @@
     pullEnabledFromBackground(() => {
       tick();
     });
-    // Light polling for SPA navigations only — no MutationObserver sort loops
+    // Light polling for SPA navigations only. No MutationObserver sort loops.
     setInterval(tick, 1000);
   }
 

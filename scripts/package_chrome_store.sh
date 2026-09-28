@@ -11,7 +11,7 @@ STAGE="$DIST/stage"
 rm -rf "$STAGE"
 mkdir -p "$STAGE" "$DIST"
 
-# Runtime files only — no .git, docs, store HTML, scripts
+# Runtime files only. The zip does not include .git, docs, store HTML, or scripts.
 cp "$ROOT/manifest.json" "$STAGE/"
 cp -R "$ROOT/src" "$STAGE/src"
 cp -R "$ROOT/icons" "$STAGE/icons"

@@ -1,4 +1,4 @@
-# Chrome Web Store — Martial Systems LLC product kit
+# Chrome Web Store: Martial Systems LLC product kit
 
 **Product:** Unit Price Sort for Amazon Search  
 **Publisher:** Martial Systems LLC  
@@ -44,7 +44,7 @@ In [Chrome Web Store Developer Dashboard](https://chrome.google.com/webstore/dev
 3. Privacy practices (section 3)  
 4. Submit for review  
 
-**Zip contents (runtime only):** `manifest.json`, `src/`, `icons/` — no `.git`, docs, or node_modules.
+**Zip contents (runtime only):** `manifest.json`, `src/`, `icons/`. The zip does not include `.git`, docs, or node_modules.
 
 ---
 
@@ -89,12 +89,12 @@ PRIVACY
 • Does not sell your data
 • Does not use advertising analytics SDKs
 • Does not send your shopping activity to a developer backend
-• Does not request broad “all websites” access—only listed Amazon domains
+• Does not request broad “all websites” access. Host access is limited to the listed Amazon domains
 • Only optional preference stored: Keep Alexa off (one boolean). No product or search history.
 
 IMPORTANT DISCLAIMERS
 • Not affiliated with Amazon.com, Inc. or its affiliates.
-• Unit prices can be wrong or incomplete—always verify on the product page before you buy.
+• Unit prices can be wrong or incomplete. Always verify on the product page before you buy.
 • Amazon page changes may temporarily break sorting or assistant-hiding until the extension is updated.
 
 Developer: Martial Systems LLC
@@ -185,7 +185,7 @@ Capture tips: pin extension, search something like “olive oil 1 liter”, Sort
 | Homepage | https://martialsys.net/ |
 | Jurisdiction | Indiana, United States |
 
-Confirm **Active** status on [INBiz Business Search](https://bsd.sos.in.gov/publicbusinesssearch) before payout/tax forms if Google asks for business verification. Use registered agent address on tax forms if required—not required on the public privacy page.
+Confirm **Active** status on [INBiz Business Search](https://bsd.sos.in.gov/publicbusinesssearch) before payout/tax forms if Google asks for business verification. Use the registered agent address on tax forms when a form requires it. The public privacy page does not include that address.
 
 ---
 
@@ -214,3 +214,5 @@ Bump `manifest.json` `version` before each Store upload (Chrome rejects reusing 
 ## 8. Trademark note
 
 Amazon is a trademark of Amazon.com, Inc. or its affiliates. Listing copy states non-affiliation. Do not use Amazon logos in Store creatives unless you have rights.
+
+Copyright © 2026 Martial Systems LLC. All rights reserved.

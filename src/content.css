@@ -1,3 +1,5 @@
+/* Copyright (c) 2026 Martial Systems LLC. All rights reserved. */
+
 #ppu-overlay {
   position: fixed;
   top: 96px;
@@ -87,7 +89,7 @@
   border-radius: 4px;
 }
 
-/* Keep Alexa off — hide Alexa-for-Shopping / Rufus / copilot shells */
+/* Keep Alexa off: hide Alexa-for-Shopping, Rufus, and copilot shells. */
 html.ppu-alexa-off .rufus-container,
 html.ppu-alexa-off .rufus-panel-container,
 html.ppu-alexa-off .rufus-chat-container,

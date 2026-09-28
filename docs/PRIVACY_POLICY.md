@@ -121,8 +121,8 @@ We do not use Extension-processed data for advertising, profiling, resale, or tr
 
 If the GDPR or UK GDPR applies, processing of information on your device is based on:
 
-- **Performance of a contract / requested service** — providing the features you installed and invoke; and/or
-- **Legitimate interests** — operating a functional browser extension with minimal data practices; and/or
+- **Performance of a contract / requested service:** providing the features you installed and invoke; and/or
+- **Legitimate interests:** operating a functional browser extension with minimal data practices; and/or
 - **Consent**, where required by law for non-essential technologies (the Extension is designed not to rely on non-essential tracking).
 
 You may stop all Extension processing by uninstalling the Extension or disabling it in your browser.
@@ -195,3 +195,5 @@ We may update this Policy from time to time. The “Last updated” date will ch
 Email: **martialsys@gmail.com**  
 Web: **https://martialsys.net/**  
 Governing jurisdiction: **Indiana, United States**
+
+Copyright © 2026 Martial Systems LLC. All rights reserved.

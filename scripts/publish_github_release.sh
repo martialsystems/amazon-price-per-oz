@@ -1,24 +1,15 @@
 #!/usr/bin/env bash
-# Build a scrambled runtime zip and publish it to the public GitHub Releases tab.
+# Publish the Chrome package zip to GitHub Releases on the public repository.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 PUBLIC_REPO="${PUBLIC_REPO:-martialsystems/amazon-price-per-oz}"
 
 "$ROOT/scripts/package_chrome_store.sh"
-STAGE="$ROOT/dist/stage"
-"$ROOT/scripts/scramble_js.sh" "$STAGE"
 
 VER="$(python3 -c "import json; print(json.load(open('$ROOT/manifest.json'))['version'])")"
-NAME="unit-price-sort-chrome"
-ZIP="$ROOT/dist/${NAME}-${VER}.zip"
-ZIP_LATEST="$ROOT/dist/${NAME}.zip"
-rm -f "$ZIP" "$ZIP_LATEST"
-(
-  cd "$STAGE"
-  zip -qr "$ZIP" . -x "*.DS_Store" -x "**/.DS_Store"
-)
-cp "$ZIP" "$ZIP_LATEST"
+ZIP="$ROOT/dist/unit-price-sort-chrome-${VER}.zip"
+test -f "$ZIP"
 
 NOTES="$(cat <<EOF
 Unit Price Sort for Amazon Search ${VER} (Martial Systems LLC)
@@ -29,9 +20,9 @@ Install (unpacked)
 3. chrome://extensions → Developer mode on
 4. Load unpacked → the folder that contains manifest.json
 
-Source is not published. Proprietary.
+Source: https://github.com/${PUBLIC_REPO}
 
-https://martialsys.net/
+Copyright © 2026 Martial Systems LLC. All rights reserved.
 EOF
 )"
 

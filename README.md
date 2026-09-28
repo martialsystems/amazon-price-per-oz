@@ -8,6 +8,7 @@
 | **Support** | martialsys@gmail.com |
 | **Web** | https://martialsys.net/ |
 | **Version** | 2.3.3 |
+| **Repository** | https://github.com/martialsystems/amazon-price-per-oz |
 | **License** | Proprietary: see [LICENSE](LICENSE) and [Terms](docs/TERMS_OF_USE.md) |
 
 Not affiliated with Amazon.com, Inc.
@@ -34,18 +35,16 @@ Not affiliated with Amazon.com, Inc.
 
 Unit-sort ON/OFF is in-memory for the browser session only. **Keep Alexa off** is a single boolean preference (not shopping data).
 
-## Publish (Releases only)
+## Repository
 
-Public GitHub is a landing page. Source stays on the private `src` remote.
+This git is the extension source. GitHub Pages serves the legal HTML from `docs/`.
 
 ```bash
-./scripts/install_dev_hooks.sh
-./scripts/push_private_source.sh
-./scripts/publish_public_landing.sh
+node tests/test_parse.js
+node tests/test_copyright.js
+./scripts/package_chrome_store.sh
 ./scripts/publish_github_release.sh
 ```
-
-Details: [docs/DEV_REMOTES.md](docs/DEV_REMOTES.md).
 
 ## Chrome Web Store upload
 
@@ -96,4 +95,4 @@ LICENSE
 README.md
 ```
 
-© 2026 Martial Systems LLC. All rights reserved.
+Copyright © 2026 Martial Systems LLC. All rights reserved.

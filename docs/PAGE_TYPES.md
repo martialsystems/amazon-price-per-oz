@@ -43,3 +43,5 @@ Old fallback treated random ancestors of those links as “cards” and reordere
 - `($133.29 / 100 Sheets)`: quantity in the unit side (toilet paper)
 - `$0.38 $0.38 /100 Sheets`: search-tile `a-offscreen` often repeats the price
 - `($7.75/count)`: compact form
+
+Copyright © 2026 Martial Systems LLC. All rights reserved.

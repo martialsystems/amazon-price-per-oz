@@ -1,5 +1,5 @@
 /**
- * Unit Price Sort for Amazon Search — Martial Systems LLC
+ * Unit Price Sort for Amazon Search
  * Copyright (c) 2026 Martial Systems LLC. All rights reserved.
  *
  * Toolbar click toggles overlay on Amazon tabs.
