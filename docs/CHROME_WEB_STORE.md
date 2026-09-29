@@ -2,7 +2,7 @@
 
 **Product:** Unit Price Sort for Amazon Search  
 **Publisher:** Martial Systems LLC  
-**Version:** 2.3.0  
+**Version:** 2.4.0  
 **Support email:** martialsys@gmail.com  
 **Homepage:** https://martialsys.net/  
 **Source package:** run `scripts/package_chrome_store.sh` → `dist/unit-price-sort-chrome.zip`
@@ -59,7 +59,7 @@ Unit Price Sort for Amazon Search
 ### Short description (max 132)
 
 ```
-Sort Amazon search by price per unit. Click Sort Now. Optional Keep Alexa off. No shopping data sold.
+Sort Amazon search by price per unit. Click Sort Now. No shopping data sold.
 ```
 
 ### Detailed description
@@ -75,27 +75,25 @@ HOW TO USE
 3. Click “Sort Now” on the on-page panel.
 4. See ranked badges such as “#1 · $0.12/oz”.
 5. Click the toolbar icon anytime to show or hide the overlay (badge shows OFF when disabled).
-6. Right-click the icon → “Keep Alexa off” to hide Amazon’s on-page shopping assistant (optional, saved preference).
-7. Right-click the icon → “Donate (Ko-fi)” if you want to support development.
+6. Right-click the icon → “Donate (Ko-fi)” if you want to support development.
 
 WHAT IT DOES
 • Reads unit prices Amazon already shows (e.g. “$0.82 / fluid ounce”), when available
 • Otherwise estimates unit price from package size in the title when possible
 • Ranks results and labels them so cheaper unit prices are easier to spot
 • Optionally reorders sibling result cards in your browser view
-• Optionally keeps Alexa-for-Shopping UI off on Amazon pages
 
 PRIVACY
 • Does not sell your data
 • Does not use advertising analytics SDKs
 • Does not send your shopping activity to a developer backend
 • Does not request broad “all websites” access. Host access is limited to the listed Amazon domains
-• Only optional preference stored: Keep Alexa off (one boolean). No product or search history.
+• Does not write extension storage. No product or search history is saved.
 
 IMPORTANT DISCLAIMERS
 • Not affiliated with Amazon.com, Inc. or its affiliates.
 • Unit prices can be wrong or incomplete. Always verify on the product page before you buy.
-• Amazon page changes may temporarily break sorting or assistant-hiding until the extension is updated.
+• Amazon page changes may temporarily break sorting until the extension is updated.
 
 Developer: Martial Systems LLC
 Support: martialsys@gmail.com
@@ -124,7 +122,7 @@ https://martialsys.net/
 
 | Console question | Answer |
 |------------------|--------|
-| Collects user data? | **No** personal shopping data to developer servers. Local preference only (see below). |
+| Collects user data? | **No** personal shopping data to developer servers. The extension does not write extension storage. |
 | Personally identifiable information | **No** |
 | Health / financial / auth | **No** |
 | Web history | **No** (Amazon pages only; not sent to us) |
@@ -134,30 +132,24 @@ https://martialsys.net/
 | Remote code | **No** |
 
 **If asked about local storage / preferences:**  
-One boolean: **Keep Alexa off**. No product IDs, prices, or queries stored.
+The extension does not write extension storage. No product IDs, prices, or queries are stored. Versions before 2.4.0 saved one on/off preference. This version does not read it.
 
 ### Host permission justification
 
 ```
-Required to read product titles, prices, and unit-price text already shown on Amazon search pages; to display ranking badges and optionally reorder result cards in the user’s tab; and, if the user enables Keep Alexa off, to hide on-page shopping assistant UI. No shopping data is sent to Martial Systems LLC.
-```
-
-### `storage` permission justification
-
-```
-Saves a single boolean preference (Keep Alexa off) so the user’s choice persists across browser restarts. Does not store shopping history, prices, or product identifiers.
+Required to read product titles, prices, and unit-price text already shown on Amazon search pages, and to display ranking badges and optionally reorder result cards in the user’s tab. No shopping data is sent to Martial Systems LLC.
 ```
 
 ### `contextMenus` permission justification
 
 ```
-Provides the extension icon menu items: Keep Alexa off (toggle) and Donate (opens support link).
+Provides the extension icon menu item Donate, which opens the support link.
 ```
 
 ### Single purpose
 
 ```
-The extension’s single purpose is to help users compare unit prices on Amazon search result pages by ranking and labeling listings by price per unit. Optional Keep Alexa off is a related on-page shopping convenience limited to the same Amazon domains.
+The extension’s single purpose is to help users compare unit prices on Amazon search result pages by ranking and labeling listings by price per unit.
 ```
 
 ---
@@ -197,8 +189,6 @@ Confirm **Active** status on [INBiz Business Search](https://bsd.sos.in.gov/publ
 - [ ] Toolbar OFF / ON  
 - [ ] Overlay Disable = toolbar OFF  
 - [ ] Drag overlay title  
-- [ ] Keep Alexa off checked → assistant stays hidden; uncheck restores
-- [ ] Keep Alexa off on a `/dp/` page hides Ask Alexa and does not shift `#dp` / the product column  
 - [ ] Donate opens Ko-fi  
 - [ ] Non-Amazon site → no overlay  
 - [ ] No uncaught extension errors on a normal search  

@@ -112,89 +112,51 @@ assert.ok(
   "IEEE proof: adjacent $/100-sheet steps collide when packed"
 );
 
-section("Keep Alexa off hides Ask Alexa without deguttering #dp");
+section("unit price sort does not hide Alexa or Rufus");
 const css = fs.readFileSync(path.join(__dirname, "../src/content.css"), "utf8");
-assert.equal(/html\.ppu-alexa-off #dp\b/.test(css), false, "must not zero #dp");
-assert.equal(/html\.ppu-alexa-off #a-page\b/.test(css), false, "must not zero #a-page");
-assert.equal(/html\.ppu-alexa-off #search\b/.test(css), false, "must not zero #search");
-assert.equal(/html\.ppu-alexa-off main\b/.test(css), false, "must not zero main");
-assert.equal(/html\.ppu-alexa-off \[role="main"\]/.test(css), false);
+const background = fs.readFileSync(path.join(__dirname, "../src/background.js"), "utf8");
+const manifest = fs.readFileSync(path.join(__dirname, "../manifest.json"), "utf8");
+const runtime = [src, css, background, manifest].join("\n");
+for (const needle of [
+  "alexaOff",
+  "ppu-alexa",
+  "ppu-set-alexa",
+  "Keep Alexa",
+  "Ask Alexa",
+  "ALEXA_",
+  "chrome.storage",
+  "all_frames",
+  "data-ppu-alexa-hidden",
+]) {
+  assert.equal(runtime.includes(needle), false, "runtime still has " + needle);
+}
+assert.equal(/rufus/i.test(runtime), false, "runtime still names rufus");
+assert.equal(/"storage"/.test(manifest), false, "storage permission was only for Keep Alexa off");
 assert.equal(/padding-left:\s*0\s*!important/.test(css), false, "must not steal page padding");
 assert.equal(/margin-left:\s*0\s*!important/.test(css), false, "must not steal page margin");
-assert.ok(/ask alexa/i.test(src));
-assert.ok(/isAlexaProtected/.test(src));
-assert.ok(/alexaHideTarget/.test(src));
-assert.ok(/withScrollPinned/.test(src));
-assert.ok(/hideAskAlexaCards/.test(src));
-assert.ok(/createTreeWalker/.test(src));
-assert.ok(/ask something else/i.test(src));
-assert.ok(/"dp"/.test(src) && /centerCol/.test(src) && /ppd/.test(src));
 assert.equal(/b\.classList\.remove\(c\)/.test(src), false, "must not strip body dock classes");
-assert.equal(/\[id\*="rufus"\]/.test(src), false, "wildcard rufus id hides the page");
-assert.equal(/\[id\*="ask-alexa"\]/.test(src), false, "wildcard ask-alexa id can be the column");
-assert.equal(/\[class\*="rufus"\]/.test(src), false, "bare rufus class wildcard is too broad");
-assert.ok(src.includes(".rufus-papyrus-active-turn"));
-assert.ok(src.includes(".rufus-html-turn-contextual-pills"));
-assert.ok(src.includes(".rufus-sections-container"));
-assert.ok(src.includes("rufus-dsk-section-container"));
-assert.ok(css.includes(".rufus-papyrus-active-turn"));
-assert.ok(css.includes(".rufus-html-turn-contextual-pills"));
-assert.ok(css.includes(".rufus-sections-container"));
-assert.ok(css.includes("rufus-dsk-section-container"));
-const manifest = fs.readFileSync(path.join(__dirname, "../manifest.json"), "utf8");
-assert.ok(/"all_frames"\s*:\s*true/.test(manifest));
 
-section("alexaHideTarget stops at #dp and hides the Ask Alexa card");
-const hStart = src.indexOf("const ALEXA_PROTECTED_IDS");
-const hEnd = src.indexOf("function hideAlexaNode");
-assert.ok(hStart >= 0 && hEnd > hStart, "alexa helpers missing");
-const ctx = { Set, String, document: { body: {}, documentElement: {} } };
-vm.runInNewContext(src.slice(hStart, hEnd), ctx);
-assert.equal(typeof ctx.alexaHideTarget, "function");
-function el(spec) {
-  return {
-    id: spec.id || "",
-    nodeType: 1,
-    className: spec.className || "",
-    parentElement: spec.parent || null,
-    hasAttribute(name) {
-      return !!(spec.attrs && Object.prototype.hasOwnProperty.call(spec.attrs, name));
-    },
-    getAttribute(name) {
-      return spec.attrs ? spec.attrs[name] : null;
-    },
-    closest() {
-      return null;
-    },
-    innerText: spec.text || "",
-    textContent: spec.text || "",
-  };
+const root = path.join(__dirname, "..");
+const skipDirs = new Set([".git", "dist", "node_modules"]);
+function walk(dir, acc) {
+  for (const name of fs.readdirSync(dir)) {
+    if (skipDirs.has(name)) continue;
+    const full = path.join(dir, name);
+    if (fs.statSync(full).isDirectory()) walk(full, acc);
+    else acc.push(full);
+  }
+  return acc;
 }
-const dp = el({ id: "dp" });
-const card = el({
-  id: "ask-card",
-  className: "a-section",
-  parent: dp,
-  text: "Ask Alexa What are the main scent notes? Why you might like this Ask something else",
-});
-const heading = el({ text: "Ask Alexa", parent: card });
-assert.strictEqual(ctx.alexaHideTarget(heading), card);
-assert.strictEqual(ctx.alexaHideTarget(dp), null);
-assert.ok(ctx.isAskAlexaSeedText("Ask Alexa"));
-assert.ok(ctx.isAskAlexaSeedText("Ask something else"));
-assert.ok(ctx.looksLikeAskAlexaCard(card));
-const fat = el({
-  id: "center-chunk",
-  parent: dp,
-  text: "Ask Alexa " + "x".repeat(3000) + " Ask something else",
-});
-const fatHeading = el({ text: "Ask Alexa", parent: fat });
-assert.strictEqual(ctx.alexaHideTarget(fatHeading), fatHeading);
-assert.ok(
-  !ctx.isAskAlexaHeading(
-    el({ text: "Ask Alexa about this huge block of chips and more text" })
-  )
-);
+for (const file of walk(root, [])) {
+  if (file === __filename) continue;
+  if (!/\.(js|css|json|html|md)$/.test(file)) continue;
+  const rel = path.relative(root, file);
+  const text = fs.readFileSync(file, "utf8");
+  assert.equal(/keep alexa/i.test(text), false, rel + " still says Keep Alexa");
+  assert.equal(/ask alexa/i.test(text), false, rel + " still says Ask Alexa");
+  assert.equal(/rufus/i.test(text), false, rel + " still names rufus");
+  assert.equal(/ppu-alexa/.test(text), false, rel + " still has ppu-alexa");
+}
 
 section("grocery oz / fl oz still parse");
 const cologne = parseAmazonUnit("$13.99 ($4.14 / fluid ounce)");

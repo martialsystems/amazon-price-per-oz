@@ -3,7 +3,7 @@
 **Unit Price Sort for Amazon Search** (the “Extension”)
 
 **Effective date:** August 4, 2026  
-**Last updated:** August 7, 2026  
+**Last updated:** September 29, 2026  
 **Developer / Data controller:** Martial Systems LLC  
 **Contact:** martialsys@gmail.com  
 **Website:** https://martialsys.net/
@@ -20,7 +20,7 @@
 | Do we run analytics or tracking pixels? | **No.** |
 | Does the Extension send data to our servers? | **No.** We do not operate a backend that receives your shopping data. |
 | What does the Extension access? | Product listing information **already displayed** on Amazon pages in your browser, to compute unit prices and rank or label results **on that page**. |
-| What is saved on your device? | Optional **Keep Alexa off** preference (a single on/off boolean). Not product or search history. |
+| What is saved on your device? | Session UI state only: overlay on/off and drag position, held in memory for the browser session. The Extension does not write extension storage. |
 
 ---
 
@@ -55,8 +55,6 @@ When you use the Extension on a supported Amazon domain, the Extension’s conte
 - Displayed prices and Amazon-shown unit prices (e.g., “$0.12/oz”);
 - Structural page elements needed to identify search-result cards (e.g., product identifiers exposed in the page markup).
 
-If you enable **Keep Alexa off**, the Extension may also identify and hide on-page Amazon “Alexa for Shopping” / assistant UI shells in your browser view. That also happens **locally**; no shopping content is uploaded to us.
-
 This processing occurs **on your device**, within the browser process. We do **not** transmit this information to Martial Systems LLC servers for analytics, advertising, or resale. The Extension is designed so that it **does not initiate network requests** to collect shopping data.
 
 #### 4.2 Preferences and interface state
@@ -65,9 +63,8 @@ This processing occurs **on your device**, within the browser process. We do **n
 |-------|---------|------------|
 | Unit-sort overlay ON/OFF | In-memory for the browser session | Toolbar / overlay toggle; not shopping history |
 | Overlay drag position | In-memory for the tab session | UI placement only |
-| **Keep Alexa off** | `chrome.storage.local` (one boolean) | Preference so the assistant stays hidden across restarts |
 
-We do **not** use storage for product lists, search queries, prices, ASINs, or account data.
+The Extension does not write extension storage. Product lists, search queries, prices, ASINs, and account data are not stored.
 
 Your browser or operating system may maintain its own caches, history, or crash logs outside our control.
 
@@ -94,9 +91,8 @@ If you open our optional **Donate** link, that takes you to a third-party site (
 
 | Permission | Why |
 |------------|-----|
-| Host access to listed Amazon domains | Run on Amazon pages to read visible listing data, show ranking UI, and optionally hide the on-page shopping assistant |
-| `contextMenus` | Right-click menu on the extension icon (**Keep Alexa off**, **Donate**) |
-| `storage` | Save only the **Keep Alexa off** boolean preference |
+| Host access to listed Amazon domains | Run on Amazon pages to read visible listing data and show ranking UI |
+| `contextMenus` | Right-click menu on the extension icon (**Donate**) |
 
 The Extension does **not** request identity, geolocation, “read all website data,” or downloads.
 
@@ -110,8 +106,7 @@ Locally processed page content is used solely to:
 
 1. Estimate or read price-per-unit values;
 2. Rank, label, or reorder search results on the page at your request (e.g., “Sort Now”);
-3. Display the Extension’s user interface (overlay, badges, toolbar badge);
-4. Optionally hide Amazon’s on-page shopping assistant UI when you enable **Keep Alexa off**.
+3. Display the Extension’s user interface (overlay, badges, toolbar badge).
 
 We do not use Extension-processed data for advertising, profiling, resale, or training of machine-learning models.
 
@@ -147,8 +142,8 @@ Because the Extension processes listing data **locally**, we do not operate a tr
 
 ### 10. Retention
 
-- **On-device unit-sort session state:** while the browser session lasts or until you clear it / uninstall.  
-- **Keep Alexa off preference:** until you change it or uninstall the Extension (or clear extension storage).  
+- **On-device unit-sort session state:** while the browser session lasts or until you clear it / uninstall.
+- **Older preference:** versions before 2.4.0 saved one on/off preference in extension storage. This version does not read or write extension storage. Uninstalling the Extension removes older local state, subject to browser behavior.
 - **Support emails:** retained as reasonably necessary, then deleted or archived per ordinary business practice.
 
 ---

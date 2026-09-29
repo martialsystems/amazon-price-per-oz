@@ -3,7 +3,7 @@
 **Unit Price Sort for Amazon Search** (the “Extension”)
 
 **Effective date:** August 4, 2026  
-**Last updated:** August 7, 2026  
+**Last updated:** September 29, 2026  
 **Developer:** Martial Systems LLC (“Provider,” “we,” “us”)  
 **Contact:** martialsys@gmail.com  
 **Website:** https://martialsys.net/
@@ -19,8 +19,6 @@ By installing, enabling, or using the Extension, you agree to these Terms of Use
 ### 2. Description of the service
 
 The Extension is a browser tool that assists you in comparing **price per unit** on certain Amazon search result pages by reading information already displayed on those pages and, at your request, ranking or labeling listings and optionally reordering result cards in your browser view.
-
-Optionally, you may enable **Keep Alexa off** to hide Amazon’s on-page shopping assistant UI in your browser. That feature is convenience-only and may stop working if Amazon changes its page structure.
 
 The Extension is provided as a **convenience utility**. It is **not affiliated with, endorsed by, or sponsored by Amazon.com, Inc. or its affiliates** (“Amazon”), except that Amazon’s name may appear in user-facing text solely to describe compatibility.
 
@@ -54,8 +52,7 @@ You acknowledge that:
 2. The Extension may break, become inaccurate, or stop working when Amazon changes its website;
 3. Prices, unit sizes, and unit prices shown or computed by the Extension may be incomplete, outdated, estimated, or wrong;
 4. Your purchases are solely between you and the seller/Amazon under Amazon’s terms;
-5. Google’s Chrome Web Store and browser policies also apply to installation and updates;
-6. Hiding Amazon’s shopping assistant does not disable Alexa devices, the Alexa app, or Amazon account features.
+5. Google’s Chrome Web Store and browser policies also apply to installation and updates.
 
 **We are not responsible for Amazon’s content, pricing, shipping, returns, taxes, product safety, or customer service.**
 
@@ -101,8 +98,7 @@ WITHOUT LIMITING THE FOREGOING, WE DO NOT WARRANT THAT:
 - UNIT PRICES OR RANKINGS WILL BE ACCURATE, COMPLETE, OR CURRENT;
 - THE EXTENSION WILL BE UNINTERRUPTED, SECURE, OR ERROR-FREE;
 - DEFECTS WILL BE CORRECTED;
-- THE EXTENSION WILL REMAIN COMPATIBLE WITH AMAZON OR CHROME;
-- OPTIONAL ASSISTANT-HIDING WILL MATCH EVERY AMAZON LAYOUT OR UPDATE.
+- THE EXTENSION WILL REMAIN COMPATIBLE WITH AMAZON OR CHROME.
 
 SOME JURISDICTIONS DO NOT ALLOW CERTAIN DISCLAIMERS; IN THOSE JURISDICTIONS, DISCLAIMERS APPLY TO THE FULLEST EXTENT PERMITTED.
 

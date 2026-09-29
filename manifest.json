@@ -1,10 +1,10 @@
 {
   "manifest_version": 3,
   "name": "Unit Price Sort for Amazon Search",
-  "version": "2.3.4",
-  "description": "Sort Amazon search by unit price. Optional Keep Alexa off. By Martial Systems LLC. No shopping data sold.",
+  "version": "2.4.0",
+  "description": "Sort Amazon search by unit price. By Martial Systems LLC. No shopping data sold.",
   "homepage_url": "https://martialsys.net/",
-  "permissions": ["contextMenus", "storage"],
+  "permissions": ["contextMenus"],
   "host_permissions": [
     "*://*.amazon.com/*",
     "*://*.amazon.ca/*",
@@ -35,8 +35,7 @@
       ],
       "js": ["src/content.js"],
       "css": ["src/content.css"],
-      "run_at": "document_idle",
-      "all_frames": true
+      "run_at": "document_idle"
     }
   ]
 }

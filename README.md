@@ -7,7 +7,7 @@ Chrome extension from Martial Systems LLC. On an Amazon search page, Sort Now ra
 | Publisher | Martial Systems LLC |
 | Support | martialsys@gmail.com |
 | Web | https://martialsys.net/ |
-| Version | 2.3.4 |
+| Version | 2.4.0 |
 | Privacy | [Privacy Policy](https://martialsystems.github.io/amazon-price-per-oz/privacy.html) |
 | Terms | [Terms of Use](https://martialsystems.github.io/amazon-price-per-oz/terms.html) |
 | License | Proprietary. See [LICENSE](LICENSE) and [Terms of Use](docs/TERMS_OF_USE.md). |
@@ -41,17 +41,16 @@ Sort Now ranks a listing when Amazon shows a unit price, or when the title state
 | Overlay **Disable** | Hides the panel and the badges. The toolbar shows **OFF**. |
 | Click the pinned icon | Turns the overlay on or off on open Amazon tabs. |
 | Icon badge **OFF** | The extension stays off until the next click. |
-| Right-click the icon, then **Keep Alexa off** | Hides Amazon's on-page shopping assistant. The product page layout stays in place. The choice is saved. |
 | Right-click the icon, then **Donate (Ko-fi)** | Opens https://ko-fi.com/martialgames. |
 
-Unit-sort on/off lasts for the browser session. Keep Alexa off is one saved preference. The extension does not keep a shopping history.
+Unit-sort on/off lasts for the browser session. The extension does not keep a shopping history.
 
 ## Privacy
 
 - Listing text is read in the browser so the page can be ranked. It is not sent to Martial Systems LLC.
 - The extension does not include an advertising or analytics SDK.
 - Host access is limited to the Amazon domains named in `manifest.json`.
-- The only saved preference is Keep Alexa off.
+- Overlay on/off and drag position stay in memory for the browser session. The extension does not write extension storage.
 
 ## Development
 

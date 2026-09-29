@@ -3,69 +3,15 @@
  * Copyright (c) 2026 Martial Systems LLC. All rights reserved.
  *
  * Lean hybrid: manual Sort Now, Amazon unit-price + title fallback,
- * badges + safe sibling reorder, session unit-sort toggle,
- * optional Keep Alexa off (stored boolean only). No shopping data / no network.
+ * badges + safe sibling reorder, session unit-sort toggle.
+ * No shopping data and no network.
  */
 (function () {
   "use strict";
 
   let enabled = true;
-  let alexaOff = false;
   let overlay = null;
   let lastHref = location.href;
-  let alexaMo = null;
-  let alexaReapTimer = null;
-
-  // Known Alexa-for-Shopping / Rufus / copilot shells (Amazon renames often)
-  const ALEXA_SELECTORS = [
-    ".rufus-container",
-    ".rufus-panel-container",
-    ".rufus-chat-container",
-    ".rufus-conversation-container",
-    ".rufus-conversation-container-inner",
-    ".rufus-container-peek-view",
-    ".rufus-panel-header-container",
-    ".rufus-view-filler",
-    ".nav-rufus-disco",
-    ".nav-rufus-content",
-    "#nav-flyout-rufus",
-    "#nav-rufus-disc-txt",
-    '[id^="nav-rufus"]',
-    ".copilot-modal-container",
-    ".copilot-chat-root",
-    "aside[data-copilot-chat-root]",
-    "div[data-copilot-name]",
-    '[class*="rufus-panel"]',
-    '[class*="rufus-chat"]',
-    '[class*="alexa-shopping"]',
-    "#ask-alexa",
-    '[id*="AlexaShopping"]',
-    /* Related-question carousel and its feedback row (observed 2026-09-28). */
-    ".rufus-papyrus-active-turn",
-    ".rufus-html-turn-contextual-pills",
-    ".rufus-sections-container",
-    '[data-csa-c-content-id="rufus-dsk-section-container"]',
-  ].join(",");
-
-  // Never hide these: hiding #dp / #a-page / main is what "moves the page back".
-  const ALEXA_PROTECTED_IDS = new Set([
-    "a-page",
-    "pageContent",
-    "search",
-    "dp",
-    "nav-main",
-    "nav-belt",
-    "navbar",
-    "dp-container",
-    "ppd",
-    "centerCol",
-    "leftCol",
-    "rightCol",
-    "navFooter",
-    "s-refinements",
-    "hmenu-canvas",
-    "ppu-overlay",
-  ]);
 
   function setEnabledLocal(next) {
     enabled = !!next;
@@ -75,192 +21,6 @@
     } else {
       ensureOverlay();
     }
-  }
-
-  function applyAlexaOff(next) {
-    alexaOff = !!next;
-    try {
-      document.documentElement.classList.toggle("ppu-alexa-off", alexaOff);
-    } catch (_) {}
-    if (alexaOff) {
-      startAlexaWatch();
-      reapAlexa();
-    } else {
-      stopAlexaWatch();
-    }
-  }
-
-  function isAlexaProtected(el) {
-    if (!el || el === document.body || el === document.documentElement) return true;
-    if (el.id && ALEXA_PROTECTED_IDS.has(el.id)) return true;
-    if (el.getAttribute && el.getAttribute("role") === "main") return true;
-    if (el.closest && el.closest("#ppu-overlay, #nav-main, #hmenu-canvas, #s-refinements"))
-      return true;
-    return false;
-  }
-
-  function nodeText(el) {
-    return String(el && (el.innerText || el.textContent) || "")
-      .replace(/\s+/g, " ")
-      .trim();
-  }
-
-  function looksLikeAskAlexaCard(el) {
-    if (!el || el.nodeType !== 1) return false;
-    const t = nodeText(el);
-    if (!t || t.length > 2500) return false;
-    const hasTitle = /\bask alexa\b/i.test(t);
-    const hasElse = /ask something else/i.test(t);
-    const hasChip = /why you might like this/i.test(t);
-    if (hasTitle && (hasElse || hasChip)) return true;
-    if (hasElse && hasChip) return true;
-    if (hasTitle && t.length <= 40) return true;
-    return false;
-  }
-
-  function alexaHideTarget(start) {
-    if (!start || start.nodeType !== 1 || isAlexaProtected(start)) return null;
-    let el = start;
-    let found = null;
-    for (let i = 0; i < 16; i++) {
-      if (isAlexaProtected(el)) break;
-      if (looksLikeAskAlexaCard(el)) found = el;
-      const p = el.parentElement;
-      if (!p || isAlexaProtected(p)) break;
-      el = p;
-    }
-    if (found) return found;
-    const fallback = start;
-    return isAlexaProtected(fallback) ? null : fallback;
-  }
-
-  function isAskAlexaSeedText(raw) {
-    const t = String(raw || "")
-      .replace(/\s+/g, " ")
-      .trim();
-    return /^ask alexa$/i.test(t) || /^ask something else$/i.test(t);
-  }
-
-  function isAskAlexaHeading(el) {
-    if (!el || el.nodeType !== 1) return false;
-    const label = String(el.getAttribute?.("aria-label") || el.getAttribute?.("alt") || "")
-      .replace(/\s+/g, " ")
-      .trim();
-    if (isAskAlexaSeedText(label)) return true;
-    return isAskAlexaSeedText(nodeText(el));
-  }
-
-  function hideAlexaNode(el) {
-    if (!el || el.nodeType !== 1) return;
-    if (isAlexaProtected(el)) return;
-    try {
-      el.style.setProperty("display", "none", "important");
-      el.style.setProperty("visibility", "hidden", "important");
-      el.style.setProperty("pointer-events", "none", "important");
-      el.setAttribute("data-ppu-alexa-hidden", "1");
-    } catch (_) {}
-  }
-
-  function hideAskAlexaCards() {
-    const seeds = [];
-    const seen = new Set();
-    function addSeed(el) {
-      if (!el || el.nodeType !== 1 || seen.has(el)) return;
-      seen.add(el);
-      seeds.push(el);
-    }
-    try {
-      if (document.body) {
-        const tw = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
-        let n;
-        while ((n = tw.nextNode())) {
-          if (isAskAlexaSeedText(n.nodeValue) && n.parentElement) addSeed(n.parentElement);
-        }
-      }
-    } catch (_) {}
-    try {
-      document.querySelectorAll("[aria-label], [alt]").forEach((el) => {
-        if (
-          isAskAlexaSeedText(el.getAttribute("aria-label")) ||
-          isAskAlexaSeedText(el.getAttribute("alt"))
-        ) {
-          addSeed(el);
-        }
-      });
-    } catch (_) {}
-    for (const el of seeds) {
-      const target = alexaHideTarget(el);
-      if (target) hideAlexaNode(target);
-    }
-  }
-
-  function withScrollPinned(fn) {
-    let x = 0;
-    let y = 0;
-    try {
-      x = window.scrollX;
-      y = window.scrollY;
-    } catch (_) {}
-    try {
-      fn();
-    } finally {
-      try {
-        if (window.scrollX !== x || window.scrollY !== y) window.scrollTo(x, y);
-      } catch (_) {}
-    }
-  }
-
-  function reapAlexa() {
-    if (!alexaOff) return;
-    withScrollPinned(() => {
-      try {
-        document.querySelectorAll(ALEXA_SELECTORS).forEach(hideAlexaNode);
-      } catch (_) {}
-      try {
-        hideAskAlexaCards();
-      } catch (_) {}
-    });
-  }
-
-  function startAlexaWatch() {
-    if (alexaMo) return;
-    try {
-      alexaMo = new MutationObserver(() => {
-        if (alexaReapTimer) return;
-        alexaReapTimer = setTimeout(() => {
-          alexaReapTimer = null;
-          reapAlexa();
-        }, 200);
-      });
-      alexaMo.observe(document.documentElement, {
-        childList: true,
-        subtree: true,
-      });
-    } catch (_) {
-      alexaMo = null;
-    }
-  }
-
-  function stopAlexaWatch() {
-    if (alexaMo) {
-      try {
-        alexaMo.disconnect();
-      } catch (_) {}
-      alexaMo = null;
-    }
-    if (alexaReapTimer) {
-      clearTimeout(alexaReapTimer);
-      alexaReapTimer = null;
-    }
-    // Undo inline hides so Amazon can show the assistant again without a full reload
-    try {
-      document.querySelectorAll("[data-ppu-alexa-hidden='1']").forEach((el) => {
-        el.style.removeProperty("display");
-        el.style.removeProperty("visibility");
-        el.style.removeProperty("pointer-events");
-        el.removeAttribute("data-ppu-alexa-hidden");
-      });
-    } catch (_) {}
   }
 
   function syncEnabledToBackground(next) {
@@ -282,7 +42,6 @@
           return;
         }
         setEnabledLocal(!!res.enabled);
-        if ("alexaOff" in res) applyAlexaOff(!!res.alexaOff);
         cb?.(enabled);
       });
     } catch (_) {
@@ -823,15 +582,12 @@
     });
   }
 
-  // Toolbar pin-click / context menu → enable/disable + Alexa preference
+  // Toolbar pin-click → enable/disable
   try {
     chrome.runtime.onMessage.addListener((msg) => {
       if (!msg || typeof msg !== "object") return;
       if (msg.type === "ppu-set-enabled") {
         setEnabledLocal(!!msg.enabled);
-      }
-      if (msg.type === "ppu-set-alexa-off") {
-        applyAlexaOff(!!msg.alexaOff);
       }
     });
   } catch (_) {}
@@ -844,10 +600,8 @@
       clearBadges();
       // recreate overlay only if still enabled
       removeOverlay();
-      if (alexaOff) reapAlexa();
     }
     if (enabled) ensureOverlay();
-    if (alexaOff) reapAlexa();
   }
 
   function init() {
